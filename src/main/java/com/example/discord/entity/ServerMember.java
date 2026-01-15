@@ -2,11 +2,15 @@ package com.example.discord.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"server_id", "user_id"})
 })
+@NoArgsConstructor
+@Getter
 public class ServerMember {
 
     @Id @GeneratedValue
@@ -23,4 +27,5 @@ public class ServerMember {
 
     public ServerMember(Server server, User user, Role role) {
     }
+
 }
