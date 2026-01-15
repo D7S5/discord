@@ -1,6 +1,7 @@
 package com.example.discord.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(uniqueConstraints = {
@@ -19,4 +20,7 @@ public class ServerMember {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public ServerMember(Server server, User user, Role role) {
+    }
 }
