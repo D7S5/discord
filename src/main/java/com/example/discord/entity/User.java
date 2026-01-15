@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @NoArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +23,14 @@ public class User {
 
     private String password;
 
-    private String nickname;
-
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
 
     @Builder
-    public User(String email, String password, String nickname) {
+    public User(String email, String password, String username) {
         this.email = email;
         this.password = password;
-        this.nickname = nickname;
+        this.username = username;
     }
 
 //    private String avatarUrl;

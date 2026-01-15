@@ -21,13 +21,13 @@ public class AuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalStateException("EMAIL ALREADY_EXISTS");
         }
-        if (userRepository.existsByNickname(request.getNickname())) {
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalStateException("NICKNAME_ALREADY_EXISTS");
         }
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .nickname(request.getNickname())
+                .username(request.getUsername())
                 .build();
 
         userRepository.save(user);
