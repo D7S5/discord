@@ -1,0 +1,41 @@
+package com.example.discord.service;
+
+import com.example.discord.entity.*;
+import com.example.discord.repository.ChannelRepository;
+import com.example.discord.repository.ServerMemberRepository;
+import com.example.discord.repository.ServerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class ChannelService {
+
+    private final ChannelRepository channelRepository;
+    private final ServerRepository serverRepository;
+    private final ServerMemberRepository serverMemberRepository;
+
+    public Channel createChannel(
+            Long serverId,
+            String name,
+            ChannelType type,
+            Long userId
+    ) {
+        ServerMember member = serverMemberRepository
+                .findByServerIdAndUserId(serverId, userId)
+                .orElseThrow(() -> new AccessDeniedException("NOT_MEMBER"));
+
+        if (member.getRole() == Role.MEMBER) {
+            throw new AccessDeniedException("NO_PERMISSION");
+        }
+
+        Server server = serverRepository.findById(serverId)
+                .orElseThrow();
+
+        Channel channel = new Channel(server, name, type);
+        return channelRepository.save(channel);
+    }
+}

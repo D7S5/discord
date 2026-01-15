@@ -1,8 +1,12 @@
 package com.example.discord.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class Channel {
 
     @Id @GeneratedValue
@@ -16,4 +20,7 @@ public class Channel {
 
     @Column(nullable = false)
     private String name;
+
+    public Channel(Server server, String name, ChannelType type) {
+    }
 }
