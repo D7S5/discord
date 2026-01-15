@@ -1,14 +1,17 @@
 package com.example.discord.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "users")
+@NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -19,5 +22,17 @@ public class User {
 
     private String password;
 
-    private String avatarUrl;
+    private String nickname;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.USER;
+
+    @Builder
+    public User(String email, String password, String nickname) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+    }
+
+//    private String avatarUrl;
 }
