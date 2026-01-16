@@ -1,7 +1,7 @@
 package com.example.discord.controller;
 
 import com.example.discord.dto.CreateServerRequest;
-import com.example.discord.entity.Server;
+import com.example.discord.dto.ServerResponse;
 import com.example.discord.security.AuthUtil;
 import com.example.discord.service.ServerService;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +17,13 @@ public class ServerController {
     private final ServerService service;
 
     @PostMapping
-    public ResponseEntity<?> createServer(
+    public ServerResponse createServer(
             @RequestBody CreateServerRequest request,
             Authentication authentication
     ) {
         Long userId = AuthUtil.getUserId(authentication);
 
-        Server server = service.createServer(
-                request.getName(),
-                userId
-        );
-        return ResponseEntity.ok(server.getId());
+        return service.createServer(request, userId)
     }
 
     @GetMapping("/me")

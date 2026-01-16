@@ -1,6 +1,6 @@
 package com.example.discord.service;
 
-import com.example.discord.dto.register.SignupRequest;
+import com.example.discord.dto.register.RegisterRequest;
 import com.example.discord.entity.User;
 import com.example.discord.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long signup(SignupRequest request) {
+    public Long register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalStateException("EMAIL ALREADY_EXISTS");
@@ -26,8 +26,8 @@ public class AuthService {
         }
         User user = User.builder()
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
                 .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         userRepository.save(user);

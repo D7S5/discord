@@ -2,13 +2,12 @@ package com.example.discord.controller;
 
 import com.example.discord.dto.LoginRequest;
 import com.example.discord.dto.TokenResponse;
-import com.example.discord.dto.register.SignupRequest;
+import com.example.discord.dto.register.RegisterRequest;
 import com.example.discord.entity.User;
 import com.example.discord.repository.UserRepository;
 import com.example.discord.security.JwtProvider;
 import com.example.discord.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,9 +34,9 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponse(token));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        Long userId = authService.signup(request);
+    @PostMapping("/register")
+    public ResponseEntity<?> signup(@RequestBody RegisterRequest request) {
+        Long userId = authService.register(request);
         String token = jwtProvider.generateToken(userId);
 
         return ResponseEntity.ok(new TokenResponse(token));

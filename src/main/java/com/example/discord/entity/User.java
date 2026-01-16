@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+        
 @Entity
 @Getter
 @Table(name = "users")
@@ -32,6 +32,5 @@ public class User {
         this.password = password;
         this.username = username;
     }
-
 //    private String avatarUrl;
 }

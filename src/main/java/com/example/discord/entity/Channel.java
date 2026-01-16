@@ -22,5 +22,8 @@ public class Channel {
     private String name;
 
     public Channel(Server server, String name, ChannelType type) {
+        this.name = name;
+        this.type = type;
+        this.server = server;
     }
 }

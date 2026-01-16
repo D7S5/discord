@@ -1,12 +1,12 @@
 package com.example.discord.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,8 +21,14 @@ public class Server {
     private String name;
 
     @Column(nullable = false)
-    private Long ownerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User owner;
 
-    public Server(String name, Long id) {
+    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL)
+    private List<Channel> channels = new ArrayList<>();
+
+    public Server(String name, User owner) {
+        this.name = name;
+        this.owner = owner;
     }
 }
