@@ -4,11 +4,14 @@ import com.example.discord.dto.CreateServerRequest;
 import com.example.discord.dto.ServerLobbyResponse;
 import com.example.discord.dto.ServerResponse;
 import com.example.discord.security.AuthUtil;
+import com.example.discord.security.UserPrincipal;
 import com.example.discord.service.ServerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/servers")
@@ -20,24 +23,22 @@ public class ServerController {
     @PostMapping
     public ServerResponse createServer(
             @RequestBody CreateServerRequest request,
-            Authentication authentication
+            @AuthenticationPrincipal UserPrincipal user
     ) {
-        Long userId = AuthUtil.getUserId(authentication);
-
-        return service.createServer(request, userId);
+        return service.createServer(request, user.getId());
     }
 
     @GetMapping("/{serverId}/lobby")
     public ServerLobbyResponse lobby(
             @PathVariable Long serverId,
-            Authentication authentication
+            @AuthenticationPrincipal UserPrincipal user
     ) {
-        Long userId = AuthUtil.getUserId(authentication);
-        return service.getLobby(serverId, userId);
+        return service.getLobby(serverId, user.getId());
     }
 
     @GetMapping("/me")
-    public Long me(Authentication authentication) {
-        return AuthUtil.getUserId(authentication);
+    public List<ServerResponse> me
+            (@AuthenticationPrincipal UserPrincipal user) {
+        return service.getMyServers(user.getId());
     }
 }

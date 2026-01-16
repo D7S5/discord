@@ -76,4 +76,11 @@ public class ServerService {
                 channels
         );
     }
+
+    public List<ServerResponse> getMyServers(Long userId) {
+        return serverRepository.findByMemberUserId(userId)
+                .stream()
+                .map(ServerResponse::from)
+                .toList();
+    }
 }

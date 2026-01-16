@@ -1,5 +1,8 @@
 package com.example.discord.security;
 
+import com.example.discord.security.CustomUserDetailsService;
+import com.example.discord.security.JwtProvider;
+import com.example.discord.security.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,36 +15,50 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtProvider jwtProvider;
-
+    private final JwtProvider jwtTokenProvider;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+        String token = resolveToken(request);
 
-            if (jwtProvider.validate(token)) {
-                Long userId = jwtProvider.getUserId(token);
+        if (token != null && jwtTokenProvider.validateToken(token)) {
 
-                Authentication auth = new UsernamePasswordAuthenticationToken(
-                        userId.toString(),
-                        null,
-                        List.of()
-                );
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
+            Long userId = jwtTokenProvider.getUserId(token);
+
+            UserPrincipal userPrincipal =
+                    (UserPrincipal) userDetailsService.loadUserById(userId);
+
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userPrincipal,
+                            null,
+                            userPrincipal.getAuthorities()
+                    );
+
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(authentication);
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        return null;
     }
 }
