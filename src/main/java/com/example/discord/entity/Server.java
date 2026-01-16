@@ -26,6 +26,13 @@ public class Server {
     @OneToMany(mappedBy = "server", cascade = CascadeType.ALL)
     private List<Channel> channels = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "server",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ServerMember> members = new ArrayList<>();
+
     public Server(String name, User owner) {
         this.name = name;
         this.owner = owner;
