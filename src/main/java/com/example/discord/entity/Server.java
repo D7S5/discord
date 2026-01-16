@@ -20,7 +20,6 @@ public class Server {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 

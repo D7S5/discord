@@ -1,6 +1,7 @@
 package com.example.discord.controller;
 
 import com.example.discord.dto.CreateServerRequest;
+import com.example.discord.dto.ServerLobbyResponse;
 import com.example.discord.dto.ServerResponse;
 import com.example.discord.security.AuthUtil;
 import com.example.discord.service.ServerService;
@@ -23,7 +24,16 @@ public class ServerController {
     ) {
         Long userId = AuthUtil.getUserId(authentication);
 
-        return service.createServer(request, userId)
+        return service.createServer(request, userId);
+    }
+
+    @GetMapping("/{serverId}/lobby")
+    public ServerLobbyResponse lobby(
+            @PathVariable Long serverId,
+            Authentication authentication
+    ) {
+        Long userId = AuthUtil.getUserId(authentication);
+        return service.getLobby(serverId, userId);
     }
 
     @GetMapping("/me")

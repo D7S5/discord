@@ -1,7 +1,6 @@
 package com.example.discord.service;
 
-import com.example.discord.dto.CreateServerRequest;
-import com.example.discord.dto.ServerResponse;
+import com.example.discord.dto.*;
 import com.example.discord.entity.*;
 import com.example.discord.repository.ChannelRepository;
 import com.example.discord.repository.ServerMemberRepository;
@@ -10,6 +9,9 @@ import com.example.discord.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +54,26 @@ public class ServerService {
 
         channelRepository.save(general);
         channelRepository.save(random);
+    }
+
+    public ServerLobbyResponse getLobby(Long serverId, Long userId) {
+        Server server = serverRepository.findById(serverId)
+                .orElseThrow(() -> new IllegalArgumentException("SERVER_NOT_FOUND"));
+
+        boolean isMember = memberRepository.existsByServerIdAndUserId(serverId, userId);
+        if ( !isMember) {
+            //채널 가입
+            throw new IllegalStateException("NOT_A_SERVER_MEMBER");
+        }
+
+        List<ChannelResponse> channels = channelRepository.findByServerIdOrderByIdAsc(serverId)
+                .stream()
+                .map(ChannelResponse::from)
+                .toList();
+
+        return new ServerLobbyResponse(
+                ServerSummaryResponse.from(server),
+                channels
+        );
     }
 }
