@@ -26,6 +26,8 @@ public class ServerMember {
     private Role role;
 
     public ServerMember(Server server, User user, Role role) {
+        this.server = server;
+        this.user = user;
+        this.role = role;
     }
-
 }

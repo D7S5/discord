@@ -9,6 +9,7 @@ import com.example.discord.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,14 +23,23 @@ public class ServerService {
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public ServerResponse createServer(CreateServerRequest request, Long userId) {
 
-        User owner = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("USER_NOT_FOUND"));
 
-        Server server = new Server(request.getName(), owner);
+        Server server = new Server(request.getName(), user);
 
         serverRepository.save(server);
+
+        ServerMember owner = new ServerMember(
+                server,
+                user,
+                Role.OWNER
+        );
+
+        memberRepository.save(owner);
 
         createDefaultChannels(server);
 
@@ -61,7 +71,7 @@ public class ServerService {
                 .orElseThrow(() -> new IllegalArgumentException("SERVER_NOT_FOUND"));
 
         boolean isMember = memberRepository.existsByServerIdAndUserId(serverId, userId);
-        if ( !isMember) {
+        if (!isMember) {
             //채널 가입
             throw new IllegalStateException("NOT_A_SERVER_MEMBER");
         }

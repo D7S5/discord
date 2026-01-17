@@ -38,8 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserPrincipal userPrincipal =
                         (UserPrincipal) userDetailsService.loadUserById(userId);
 
-                log.info("JWT userId = {}", userId);
-                log.info("UserPrincipal = {}", userPrincipal);
+//                log.info("JWT userId = {}", userId);
+//                log.info("UserPrincipal = {}", userPrincipal);
 
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(
