@@ -35,7 +35,6 @@ public class ServerController {
             @AuthenticationPrincipal UserPrincipal user
     ) {
         ServerLobbyResponse res = service.getLobby(serverId, user.getId());
-        System.out.println(res);
         return res;
     }
 

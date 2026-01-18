@@ -17,17 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     private final MessageService messageService;
-    @MessageMapping("/chat.send")
-    @SendTo("/topic/channels/{channelId}")
-    public MessageResponse send(
-            @Payload ChatMessage message,
-            @DestinationVariable Long channelId
-    ) {
-        Message saved = messageService.save(
-                channelId,
-                message.getSenderId(),
-                message.getContent()
-        );
-        return MessageResponse.from(saved);
-    }
+//    @MessageMapping("/chat.send")
+//    @SendTo("/topic/channels/{channelId}")
+//    public MessageResponse send(
+//            @Payload ChatMessage message,
+//            @DestinationVariable Long channelId
+//    ) {
+//        Message saved = messageService.save(
+//                channelId,
+//                message.getSenderId(),
+//                message.getContent()
+//        );
+//        return MessageResponse.from(saved);
+//    }
 }

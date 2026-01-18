@@ -1,5 +1,6 @@
 package com.example.discord.service;
 
+import com.example.discord.dto.ChatMessageRequest;
 import com.example.discord.dto.MessageResponse;
 import com.example.discord.entity.Channel;
 import com.example.discord.entity.Message;
@@ -23,21 +24,21 @@ public class MessageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Message save(Long channelId, Long userId, String content) {
+    public MessageResponse save(Long channelId, String username, ChatMessageRequest request) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow();
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow();
 
         Message message = Message.builder()
                 .channel(channel)
                 .sender(user)
-                .content(content)
+                .content(request.getContent())
                 .createdAt(OffsetDateTime.now())
                 .build();
 
-        return messageRepository.save(message);
+        return MessageResponse.from(messageRepository.save(message));
     }
 
     @Transactional(readOnly = true)
