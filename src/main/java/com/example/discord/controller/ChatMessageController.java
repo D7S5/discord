@@ -26,14 +26,12 @@ public class ChatMessageController {
             ChatMessageRequest request,
             SimpMessageHeaderAccessor accessor
             ) {
-        String userId = (String) accessor.getSessionAttributes().get("userId");
+        Long userId = (Long) accessor.getSessionAttributes().get("userId");
         System.out.println("accessor = " + userId);
-
 
         if (userId == null) {
             throw new IllegalStateException("WebSocket 인증 정보 없음");
         }
-
         MessageResponse saved =
                 messageService.save(channelId, userId, request);
 

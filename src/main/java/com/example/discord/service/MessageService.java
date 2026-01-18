@@ -24,11 +24,11 @@ public class MessageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public MessageResponse save(Long channelId, String username, ChatMessageRequest request) {
+    public MessageResponse save(Long channelId, Long userId, ChatMessageRequest request) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow();
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findById(userId)
                 .orElseThrow();
 
         Message message = Message.builder()

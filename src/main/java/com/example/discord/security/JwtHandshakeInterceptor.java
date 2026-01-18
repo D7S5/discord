@@ -15,7 +15,6 @@ import java.util.Map;
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
     private final JwtProvider jwtProvider;
-
     @Override
     public boolean beforeHandshake(
             ServerHttpRequest request,
