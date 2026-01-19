@@ -17,7 +17,7 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    @GetMapping("/{serverId}{channelId}/messages")
+    @GetMapping("/{channelId}/messages")
     public List<MessageResponse> history(
             @PathVariable Long channelId
     ) {

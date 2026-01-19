@@ -8,10 +8,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,7 +24,6 @@ public class ChatMessageController {
             SimpMessageHeaderAccessor accessor
             ) {
         Long userId = (Long) accessor.getSessionAttributes().get("userId");
-        System.out.println("accessor = " + userId);
 
         if (userId == null) {
             throw new IllegalStateException("WebSocket 인증 정보 없음");

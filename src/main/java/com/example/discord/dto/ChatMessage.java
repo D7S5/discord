@@ -14,5 +14,4 @@ public class ChatMessage {
     private String senderName;
     private String content;
     private OffsetDateTime createAt;
-
 }

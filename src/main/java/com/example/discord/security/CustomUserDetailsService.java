@@ -22,9 +22,7 @@ public class CustomUserDetailsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
-
-        log.info("JWT userId = {}", userId);
-
+//        log.info("JWT userId = {}", userId);
         return new UserPrincipal(
                 user.getId(),
                 user.getEmail(),

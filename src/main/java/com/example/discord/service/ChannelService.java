@@ -1,5 +1,6 @@
 package com.example.discord.service;
 
+import com.example.discord.dto.ChannelResponse;
 import com.example.discord.entity.*;
 import com.example.discord.repository.ChannelRepository;
 import com.example.discord.repository.ServerMemberRepository;
@@ -18,7 +19,7 @@ public class ChannelService {
     private final ServerRepository serverRepository;
     private final ServerMemberRepository serverMemberRepository;
 
-    public Channel createChannel(
+    public ChannelResponse createChannel(
             Long serverId,
             String name,
             ChannelType type,
@@ -36,6 +37,8 @@ public class ChannelService {
                 .orElseThrow();
 
         Channel channel = new Channel(server, name, type);
-        return channelRepository.save(channel);
+        channelRepository.save(channel);
+
+        return ChannelResponse.from(channel);
     }
 }
