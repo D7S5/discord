@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberResponse {
 
-    private Long userId;
+    private String userId;
     private String username;
     private String role;
 

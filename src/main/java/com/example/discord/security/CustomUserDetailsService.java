@@ -18,11 +18,11 @@ public class CustomUserDetailsService {
 
     private final UserRepository userRepository;
 
-    public UserDetails loadUserById(Long userId) {
+    public UserDetails loadUserById(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
-//        log.info("JWT userId = {}", userId);
+
         return new UserPrincipal(
                 user.getId(),
                 user.getEmail(),

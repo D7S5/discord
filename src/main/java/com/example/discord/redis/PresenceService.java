@@ -1,6 +1,7 @@
 package com.example.discord.redis;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class PresenceService {
     private static String key = "online:server:";
 
     public void online(Long serverId, String userId) {
-        redis.opsForSet().add(String.valueOf(serverId), userId);
+        redis.opsForSet().add(key + serverId, userId);
         redis.expire(key + serverId, TTL, TimeUnit.SECONDS);
     }
 

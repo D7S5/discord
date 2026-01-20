@@ -24,7 +24,7 @@ public class ServerService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ServerResponse createServer(CreateServerRequest request, Long userId) {
+    public ServerResponse createServer(CreateServerRequest request, String userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("USER_NOT_FOUND"));
@@ -46,7 +46,7 @@ public class ServerService {
         return ServerResponse.from(server);
     }
 
-    public void deleteServer(Long serverId, Long userId) {
+    public void deleteServer(Long serverId, String userId) {
         ServerMember member = memberRepository
                 .findByServerIdAndUserId(serverId, userId)
                 .orElseThrow(() -> new AccessDeniedException("NOT_MEMBER"));
@@ -66,7 +66,7 @@ public class ServerService {
         channelRepository.save(random);
     }
 
-    public ServerLobbyResponse getLobby(Long serverId, Long userId) {
+    public ServerLobbyResponse getLobby(Long serverId, String userId) {
         Server server = serverRepository.findById(serverId)
                 .orElseThrow(() -> new IllegalArgumentException("SERVER_NOT_FOUND"));
 
@@ -95,7 +95,7 @@ public class ServerService {
         );
     }
 
-    public List<ServerResponse> getMyServers(Long userId) {
+    public List<ServerResponse> getMyServers(String userId) {
         return serverRepository.findByMemberUserId(userId)
                 .stream()
                 .map(ServerResponse::from)

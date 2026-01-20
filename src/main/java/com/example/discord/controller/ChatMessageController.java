@@ -23,7 +23,7 @@ public class ChatMessageController {
             ChatMessageRequest request,
             SimpMessageHeaderAccessor accessor
             ) {
-        Long userId = (Long) accessor.getSessionAttributes().get("userId");
+        String userId = (String) accessor.getSessionAttributes().get("userId");
 
         if (userId == null) {
             throw new IllegalStateException("WebSocket 인증 정보 없음");

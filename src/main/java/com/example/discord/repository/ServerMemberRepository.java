@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface ServerMemberRepository extends JpaRepository<ServerMember, Long> {
 
-    Optional<ServerMember> findByServerIdAndUserId(Long serverId, Long userId);
+    Optional<ServerMember> findByServerIdAndUserId(Long serverId, String userId);
 
-    boolean existsByServerIdAndUserId(Long serverId, Long userId);
+    boolean existsByServerIdAndUserId(Long serverId, String userId);
 
     List<ServerMember> findByServerId(Long serverId);
 }

@@ -23,7 +23,7 @@ public class ChannelService {
             Long serverId,
             String name,
             ChannelType type,
-            Long userId
+            String userId
     ) {
         ServerMember member = serverMemberRepository
                 .findByServerIdAndUserId(serverId, userId)

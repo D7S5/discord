@@ -12,5 +12,5 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
         join s.members m
         where m.user.id = :userId
     """)
-    List<Server> findByMemberUserId(Long userId);
+    List<Server> findByMemberUserId(String userId);
 }

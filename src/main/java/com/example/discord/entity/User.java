@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-        
+
+import java.util.UUID;
+
 @Entity
 @Getter
 @Table(name = "users")
@@ -12,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(length = 36, nullable = false)
+    private String id = UUID.randomUUID().toString();
 
     @Column(unique = true, nullable = false)
     private String email;

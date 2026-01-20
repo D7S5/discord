@@ -21,6 +21,7 @@ public class Server {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @OneToMany(mappedBy = "server", cascade = CascadeType.ALL)

@@ -11,7 +11,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    private final Long id;
+    private final String id;
     private final String email;
     private final String username;
     private final String password;

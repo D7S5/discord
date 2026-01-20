@@ -27,7 +27,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
             if (auth != null && auth.startsWith("Bearer ")) {
                 String token = auth.substring(7);
-                Long userId = jwtProvider.getUserId(token);
+                String userId = jwtProvider.getUserId(token);
 
                 System.out.println("Interceptor = " + userId);
 

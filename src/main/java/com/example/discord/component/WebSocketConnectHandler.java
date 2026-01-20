@@ -25,23 +25,18 @@ public class WebSocketConnectHandler {
     public void handleConnect(SessionConnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        if (accessor.getUser() == null) {
-            log.warn("❌ WebSocket CONNECT without authentication");
-            return;
-        }
-
         String userId = accessor.getUser().getName();
-        System.out.println("getUser = " + userId);
+        System.out.println("[Connect] userId = " + userId);
         String serverIdHeader = accessor.getFirstNativeHeader("serverId");
 
         if (serverIdHeader == null) return ;
 
         long serverId = Long.valueOf(serverIdHeader);
-        System.out.println("serverId = " + serverId);
+        System.out.println("[Connect] serverId = " + serverId);
         presenceService.online(serverId, userId);
 
-        accessor.getSessionAttributes().put("serverId", serverId);
-        accessor.getSessionAttributes().put("userId", userId);
+        accessor.getSessionAttributes().put("serverId = ", serverId);
+        accessor.getSessionAttributes().put("userId = ", userId);
 
         messagingTemplate.convertAndSend(
                 "/topic/presence/" + serverId,

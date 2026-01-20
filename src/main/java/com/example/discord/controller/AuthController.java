@@ -36,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> signup(@RequestBody RegisterRequest request) {
-        Long userId = authService.register(request);
+        String userId = authService.register(request);
         String token = jwtProvider.generateToken(userId);
 
         return ResponseEntity.ok(new TokenResponse(token));

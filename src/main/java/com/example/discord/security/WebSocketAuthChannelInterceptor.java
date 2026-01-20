@@ -27,20 +27,27 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
 
             String authHeader = accessor.getFirstNativeHeader("Authorization");
+            String serverIdHeader = accessor.getFirstNativeHeader("serverId");
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 throw new IllegalStateException("WebSocket Authorization 헤더 없음");
             }
 
-            String token = authHeader.substring(7);
-            Long userId = jwtProvider.getUserId(token);
+            if (serverIdHeader == null) {
+                throw new IllegalStateException("ServerId 저장 안됨");
+            }
 
-            accessor.setUser(() -> String.valueOf(userId));
+            String token = authHeader.substring(7);
+
+            String userId = jwtProvider.getUserId(token);
+            Long serverId = Long.valueOf(serverIdHeader);
+
+            accessor.setUser(new StompPrincipal(userId));
 
             // ⭐ 세션에 저장
             accessor.getSessionAttributes().put("userId", userId);
+            accessor.getSessionAttributes().put("serverId", serverId);
         }
-
         return message;
     }
 }

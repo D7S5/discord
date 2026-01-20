@@ -24,7 +24,7 @@ public class MessageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public MessageResponse save(Long channelId, Long userId, ChatMessageRequest request) {
+    public MessageResponse save(Long channelId, String userId, ChatMessageRequest request) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow();
 
