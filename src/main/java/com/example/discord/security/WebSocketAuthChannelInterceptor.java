@@ -35,6 +35,8 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
             String token = authHeader.substring(7);
             Long userId = jwtProvider.getUserId(token);
 
+            accessor.setUser(() -> String.valueOf(userId));
+
             // ⭐ 세션에 저장
             accessor.getSessionAttributes().put("userId", userId);
         }
