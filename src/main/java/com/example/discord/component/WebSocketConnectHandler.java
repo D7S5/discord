@@ -32,7 +32,7 @@ public class WebSocketConnectHandler {
         if (serverIdHeader == null) return ;
 
         long serverId = Long.valueOf(serverIdHeader);
-        System.out.println("[Connect] serverId = " + serverId);
+
         presenceService.online(serverId, userId);
 
         accessor.getSessionAttributes().put("serverId = ", serverId);

@@ -23,16 +23,11 @@ public class WebSocketEventListener {
     public void handleDisconnect(SessionDisconnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        if (accessor.getUser() == null) {
-            log.warn("accessor.getUser is null");
-            return;
-        }
-
-        String userId = accessor.getUser().getName();
+        String userId = (String) accessor.getSessionAttributes().get("userId");
         Long serverId = (Long) accessor.getSessionAttributes().get("serverId");
 
-        System.out.println("Disconnect serverId" + serverId);
-        System.out.println("Disconnect userId" + userId);
+        System.out.println("Disconnect serverId = " + serverId);
+        System.out.println("Disconnect userId = " + userId);
 
         presenceService.offline(serverId, userId);
 

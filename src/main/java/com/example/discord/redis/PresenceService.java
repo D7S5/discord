@@ -33,4 +33,5 @@ public class PresenceService {
     public Set<String> onlineUsers(Long serverId) {
         return redis.opsForSet().members(key + serverId);
     }
+
 }

@@ -81,17 +81,16 @@ public class ServerService {
                 .map(ChannelResponse::from)
                 .toList();
 
-
-        List<MemberResponse> members = memberRepository
-                .findByServerId(serverId)
-                .stream()
-                .map(MemberResponse::from)
-                .toList();
+//        List<MemberResponse> members = memberRepository
+//                .findByServerId(serverId)
+//                .stream()
+//                .map(MemberResponse::from)
+//                .toList();
 
         return new ServerLobbyResponse(
                 ServerSummaryResponse.from(server),
-                channels,
-                members
+                channels
+//                members
         );
     }
 
