@@ -7,9 +7,11 @@ import com.example.discord.security.AuthUtil;
 import com.example.discord.security.UserPrincipal;
 import com.example.discord.service.ServerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -41,6 +43,10 @@ public class ServerController {
     @GetMapping("/me")
     public List<ServerResponse> me
             (@AuthenticationPrincipal UserPrincipal user) {
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        System.out.println("user = " + user.getId());
         return service.getMyServers(user.getId());
     }
 }
