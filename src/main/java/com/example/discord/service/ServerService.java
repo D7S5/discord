@@ -2,6 +2,7 @@ package com.example.discord.service;
 
 import com.example.discord.dto.*;
 import com.example.discord.entity.*;
+import com.example.discord.redis.PresenceService;
 import com.example.discord.repository.ChannelRepository;
 import com.example.discord.repository.ServerMemberRepository;
 import com.example.discord.repository.ServerRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +24,7 @@ public class ServerService {
     private final ServerMemberRepository memberRepository;
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
+    private final PresenceService presenceService;
 
     @Transactional
     public ServerResponse createServer(CreateServerRequest request, String userId) {
@@ -81,16 +84,24 @@ public class ServerService {
                 .map(ChannelResponse::from)
                 .toList();
 
-        List<MemberResponse> members = memberRepository
-                .findByServerId(serverId)
-                .stream()
-                .map(MemberResponse::from)
-                .toList();
+
+        List<ServerMember> members =
+                memberRepository.findByServerId(serverId);
+
+        Set<String> onlineUserIds =
+                presenceService.onlineUsers(serverId);
+
+        List<MemberStatusResponse> memberlist = members.stream()
+                .map(m -> new MemberStatusResponse(
+                        m.getUser().getId(),
+                        m.getUser().getUsername(),
+                        onlineUserIds.contains(m.getUser().getId())
+                )).toList();
 
         return new ServerLobbyResponse(
                 ServerSummaryResponse.from(server),
                 channels,
-                members
+                memberlist
         );
     }
 

@@ -12,5 +12,5 @@ import java.util.List;
 public class ServerLobbyResponse {
     private ServerSummaryResponse server;
     private List<ChannelResponse> channels;
-    private List<MemberResponse> members;
+    private List<MemberStatusResponse> members;
 }
