@@ -5,23 +5,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Table(name = "users")
 @NoArgsConstructor
-public class User {
-
-    @Id
-    @Column(length = 36, nullable = false)
-    private String id = UUID.randomUUID().toString();
+public class User extends BaseEntity{
 
     @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String username;
+
+    private String discriminator;
+
+    private String avatarUrl;
+
+    private UserStatus status;
 
     private String password;
 
@@ -34,5 +37,5 @@ public class User {
         this.password = password;
         this.username = username;
     }
-//    private String avatarUrl;
+
 }
