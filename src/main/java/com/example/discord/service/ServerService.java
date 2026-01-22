@@ -95,6 +95,7 @@ public class ServerService {
                 .map(m -> new MemberStatusResponse(
                         m.getUser().getId(),
                         m.getUser().getUsername(),
+                        m.getRole().name(),
                         onlineUserIds.contains(m.getUser().getId())
                 )).toList();
 

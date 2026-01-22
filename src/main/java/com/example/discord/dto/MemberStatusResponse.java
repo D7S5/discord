@@ -6,7 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MemberStatusResponse {
-    private String id;
+    private String userId;
     private String username;
+    private String role;
     private boolean online;
 }
