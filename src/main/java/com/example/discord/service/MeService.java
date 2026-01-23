@@ -2,6 +2,7 @@ package com.example.discord.service;
 
 import com.example.discord.dto.DmRoomDto;
 import com.example.discord.dto.FriendDto;
+import com.example.discord.dto.FriendListDto;
 import com.example.discord.dto.MeResponse;
 import com.example.discord.repository.DmRoomRepository;
 import com.example.discord.repository.FriendRepository;
@@ -21,9 +22,9 @@ public class MeService {
 
     public MeResponse getMePage(String userId) {
 
-        List<FriendDto> friends = friendRepo.findFriends(userId)
+        List<FriendListDto> friends = friendRepo.findFriends(userId)
                 .stream()
-                .map(f -> new FriendDto(f.getOther(userId)))
+                .map(f -> new FriendListDto(f.getOther(userId)))
                 .toList();
 
         List<DmRoomDto> dmRooms = dmRepo.findDmRooms(userId)

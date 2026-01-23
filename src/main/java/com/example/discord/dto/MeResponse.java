@@ -7,6 +7,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class MeResponse {
-    private List<FriendDto> friends;
+    private List<FriendListDto> friends;
     private List<DmRoomDto> dmRooms;
 }

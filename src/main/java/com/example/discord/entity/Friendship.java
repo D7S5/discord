@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
         name = "friendships",
+        indexes = {
+                @Index(name = "idx_friend_user", columnList = "user_id"),
+                @Index(name = "idx_friend_target", columnList = "target_id"),
+                @Index(name = "idx_friend_status", columnList = "status")},
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"user_id", "target_id"})
         }

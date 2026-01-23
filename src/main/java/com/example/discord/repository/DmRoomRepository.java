@@ -10,7 +10,7 @@ import java.util.List;
 public interface DmRoomRepository extends JpaRepository<DmRoom, String> {
     @Query("""
         select d from DmRoom d
-        where d.userA = :userId or d.userB = :userId
+        where d.userA.id = :userId or d.userB.id = :userId
         order by d.lastMessageAt desc nulls last
     """)
     List<DmRoom> findDmRooms(@Param("userId") String userId);
