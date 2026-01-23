@@ -20,14 +20,26 @@ public class DmRoomRead {
     private DmRoomReadId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("roomId")
     @JoinColumn(name = "room_id")
     private DmRoom room;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
     private String lastReadMessageId = UUID.randomUUID().toString();
 
+    public static DmRoomRead create(DmRoom room, User user) {
+        DmRoomRead r = new DmRoomRead();
+        r.id = new DmRoomReadId(room.getId(), user.getId());
+        r.room = room;
+        r.user = user;
+        return r;
+    }
 
+    public void read(String messageId) {
+        this.lastReadMessageId = messageId;
+    }
 }

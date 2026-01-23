@@ -37,4 +37,8 @@ public class DmRoom extends BaseEntity {
         }
         return dmRoom;
     }
+    public String getOther(String me) {
+        return userA.getId().equals(me) ? userB.getId() : userA.getId();
+    }
 }
+

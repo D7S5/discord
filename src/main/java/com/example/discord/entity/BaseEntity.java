@@ -13,10 +13,9 @@ import java.util.UUID;
 
 @MappedSuperclass
 @Getter
-public class BaseEntity {
+public abstract class BaseEntity {
 
     @Id
-    @GeneratedValue
     @Column(nullable = false, length = 36)
     private String id = UUID.randomUUID().toString();
 

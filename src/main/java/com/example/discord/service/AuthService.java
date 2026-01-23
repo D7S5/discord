@@ -4,6 +4,7 @@ import com.example.discord.dto.register.RegisterRequest;
 import com.example.discord.entity.User;
 import com.example.discord.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,20 +18,18 @@ public class AuthService {
 
     @Transactional
     public String register(RegisterRequest request) {
+        try {
+            User user = User.builder()
+                    .email(request.getEmail())
+                    .username(request.getUsername())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .build();
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalStateException("EMAIL ALREADY_EXISTS");
-        }
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalStateException("NICKNAME_ALREADY_EXISTS");
-        }
-        User user = User.builder()
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
+            userRepository.save(user);
+            return user.getId();
 
-        userRepository.save(user);
-        return user.getId();
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalStateException("EMAIL_OR_USERNAME_ALREADY_EXISTS");
+        }
     }
 }
