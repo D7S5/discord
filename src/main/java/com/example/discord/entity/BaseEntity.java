@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @MappedSuperclass
 @Getter
@@ -17,7 +18,7 @@ public class BaseEntity {
     @Id
     @GeneratedValue
     @Column(nullable = false, length = 36)
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     @CreationTimestamp
     private OffsetDateTime createdAt;

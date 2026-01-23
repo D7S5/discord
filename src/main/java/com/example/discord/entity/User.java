@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -37,5 +37,4 @@ public class User extends BaseEntity{
         this.password = password;
         this.username = username;
     }
-
 }
