@@ -1,0 +1,26 @@
+package com.example.discord.dto;
+
+import com.example.discord.entity.DmMessage;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.time.OffsetDateTime;
+
+@Getter
+@AllArgsConstructor
+public class DmMessageResponse {
+
+    private Long id;
+    private String content;
+    private String sender;
+    private OffsetDateTime createdAt;
+
+    public static DmMessageResponse from(DmMessage m) {
+        return new DmMessageResponse(
+                m.getId(),
+                m.getContent(),
+                m.getSender().getId(),
+                m.getCreateAt()
+        );
+    }
+}

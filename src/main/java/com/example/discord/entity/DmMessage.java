@@ -1,6 +1,7 @@
 package com.example.discord.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
@@ -11,11 +12,12 @@ import java.util.UUID;
     indexes = {
         @Index(columnList = "room_id, id")
     })
+@Getter
 public class DmMessage {
 
     @Id
-    @GeneratedValue
-    private String id = UUID.randomUUID().toString();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
