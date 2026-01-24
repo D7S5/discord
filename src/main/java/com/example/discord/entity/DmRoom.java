@@ -26,7 +26,7 @@ public class DmRoom extends BaseEntity {
 
     private OffsetDateTime lastMessageAt;
 
-    private static DmRoom create(User a, User b) {
+    public static DmRoom create(User a, User b) {
         DmRoom dmRoom = new DmRoom();
         if(a.getId().compareTo(b.getId()) < 0) {
             dmRoom.userA = a;
@@ -37,6 +37,7 @@ public class DmRoom extends BaseEntity {
         }
         return dmRoom;
     }
+
     public String getOther(String me) {
         return userA.getId().equals(me) ? userB.getId() : userA.getId();
     }

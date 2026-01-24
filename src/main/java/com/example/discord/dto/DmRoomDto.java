@@ -11,5 +11,6 @@ public class DmRoomDto {
 
     private String roomId;
     private String opponentId;
+    private String username;
     private OffsetDateTime lastMessageAt;
 }

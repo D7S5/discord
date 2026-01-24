@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/channels/**").authenticated()
                         .requestMatchers("/api/channels/@me").authenticated()
                         .requestMatchers("/api/channels/friends").authenticated()
+                        .requestMatchers("/api/dm/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

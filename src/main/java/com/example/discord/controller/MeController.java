@@ -10,16 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MeController {
 
     private final MeService meService;
 
-    @GetMapping("/api/channels/@me")
+    @GetMapping("/channels/@me")
     public MeResponse me(@AuthenticationPrincipal UserPrincipal user){
-        System.out.println(user);
-
         return meService.getMePage(user.getId());
     }
 }
