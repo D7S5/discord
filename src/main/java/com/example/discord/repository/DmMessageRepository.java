@@ -1,6 +1,5 @@
 package com.example.discord.repository;
 
-import com.example.discord.dto.DmMessageResponse;
 import com.example.discord.entity.DmMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 

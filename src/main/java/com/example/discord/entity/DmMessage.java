@@ -34,5 +34,5 @@ public class DmMessage {
     private MessageType type;
 
     @CreationTimestamp
-    private OffsetDateTime createAt;
+    private OffsetDateTime createdAt;
 }

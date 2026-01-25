@@ -20,7 +20,7 @@ public class DmMessageResponse {
                 m.getId(),
                 m.getContent(),
                 m.getSender().getId(),
-                m.getCreateAt()
+                m.getCreatedAt()
         );
     }
 }
