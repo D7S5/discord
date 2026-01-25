@@ -24,12 +24,12 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String userId = (String) accessor.getSessionAttributes().get("userId");
-        Long serverId = (Long) accessor.getSessionAttributes().get("serverId");
-
-        System.out.println("Disconnect serverId = " + serverId);
+//        Long serverId = (Long) accessor.getSessionAttributes().get("serverId");
+//
+//        System.out.println("Disconnect serverId = " + serverId);
         System.out.println("Disconnect userId = " + userId);
 
-        presenceService.offline(serverId, userId);
+//        presenceService.offline(serverId, userId);
 
         messagingTemplate.convertAndSend(
                 "/topic/presence",

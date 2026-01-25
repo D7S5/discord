@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface DmMessageRepository extends JpaRepository<DmMessage, Long> {
     List<DmMessage> findByRoomIdOrderByCreatedAtAsc(String roomId);
+
+    List<DmMessage> findByRoomId(String roomId);
 }

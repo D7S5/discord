@@ -26,4 +26,10 @@ public class DmRoomService {
         return dmRoomRepository.findRoom(a.getId(), b.getId())
                 .orElseGet(() -> dmRoomRepository.save(DmRoom.create(a, b)));
     }
+
+    public String getOtherUserId(String roomId, String senderId) {
+         DmRoom res =  dmRoomRepository.findById(roomId)
+                 .orElseThrow(() -> new IllegalArgumentException("DM_ROOM_NOT_FOUND"));
+         return res.getOther(senderId);
+    }
 }

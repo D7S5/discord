@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 public class DmMessageResponse {
 
     private Long id;
+    private String roomId;
     private String content;
     private String sender;
     private OffsetDateTime createdAt;
@@ -18,8 +19,9 @@ public class DmMessageResponse {
     public static DmMessageResponse from(DmMessage m) {
         return new DmMessageResponse(
                 m.getId(),
+                m.getRoomId(),
                 m.getContent(),
-                m.getSender().getId(),
+                m.getSenderId(),
                 m.getCreatedAt()
         );
     }

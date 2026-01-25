@@ -41,5 +41,6 @@ public class DmRoom extends BaseEntity {
     public String getOther(String me) {
         return userA.getId().equals(me) ? userB.getId() : userA.getId();
     }
+
 }
 

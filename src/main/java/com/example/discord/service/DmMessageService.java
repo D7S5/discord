@@ -27,15 +27,17 @@ public class DmMessageService {
                 .map(DmMessageResponse::from)
                 .toList();
     }
+    public DmMessage save(String roomId, String senderId, String content) {
+        // room + sender + receiver 검증 로직
+        return dmMessageRepository.save(
+                new DmMessage(roomId, senderId, content)
+        );
+    }
 
-//    public void send(String userId, String roomId) {
-//        User sender = userRepository.getReferenceById(userId);
-//
-//        dmMessageRepository.save(
-//                new DmMessage(
-//                        new DmRoom(roomId),
-//                        sender,
-//                        req.getContent()
-//                )
-//        )
+    public List<DmMessage> findByRoom(String roomId, String userId) {
+        // 권한 체크 포함
+        return dmMessageRepository.findByRoomId(roomId);
+    }
+
+
 }

@@ -27,20 +27,17 @@ public class WebSocketConnectHandler {
 
         String userId = accessor.getUser().getName();
         System.out.println("[Connect] userId = " + userId);
-        String serverIdHeader = accessor.getFirstNativeHeader("serverId");
+//        String serverIdHeader = accessor.getFirstNativeHeader("serverId");
 
-        if (serverIdHeader == null) return ;
+//        if (serverIdHeader == null) return ;
 
-        long serverId = Long.valueOf(serverIdHeader);
+//        long serverId = Long.valueOf(serverIdHeader);
 
-        presenceService.online(serverId, userId);
+//        presenceService.online(serverId, userId);
 
-        accessor.getSessionAttributes().put("serverId = ", serverId);
-        accessor.getSessionAttributes().put("userId = ", userId);
-
-        messagingTemplate.convertAndSend(
-                "/topic/presence/" + serverId,
-                new PresenceMessage(userId, "ONLINE")
-        );
+//        messagingTemplate.convertAndSend(
+//                "/topic/presence/" + serverId,
+//                new PresenceMessage(userId, "ONLINE")
+//        );
     }
 }
