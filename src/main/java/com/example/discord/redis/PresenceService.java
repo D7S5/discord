@@ -25,6 +25,15 @@ public class PresenceService {
         redis.opsForSet().remove(key + serverId, userId);
     }
 
+    public void heartbeat(Long serverId, String userId) {
+        redis.opsForValue().set(
+                key + serverId + ":" + userId,
+                "1",
+                TTL,
+                TimeUnit.SECONDS
+        );
+    }
+
     public boolean isOnline(Long serverId, String userId) {
         return Boolean.TRUE.equals(
                 redis.opsForSet().isMember(key + serverId, userId));

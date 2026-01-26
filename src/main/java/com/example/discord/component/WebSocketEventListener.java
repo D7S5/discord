@@ -12,6 +12,8 @@ import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.Set;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -23,13 +25,21 @@ public class WebSocketEventListener {
     public void handleDisconnect(SessionDisconnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String userId = (String) accessor.getSessionAttributes().get("userId");
-//        Long serverId = (Long) accessor.getSessionAttributes().get("serverId");
-//
-//        System.out.println("Disconnect serverId = " + serverId);
-        System.out.println("Disconnect userId = " + userId);
+        String userId = accessor.getUser() != null
+                ? accessor.getUser().getName()
+                : null;
+        if (userId == null) return;
 
-//        presenceService.offline(serverId, userId);
+        @SuppressWarnings("unchecked")
+        Set<Long> serverIds =
+                (Set<Long>) accessor.getSessionAttributes().get("servers");
+
+        if (serverIds == null) return;
+
+        for (Long serverId : serverIds) {
+            presenceService.offline(serverId, userId);
+            log.info("🔴 OFFLINE user={} server={}", userId, serverId);
+        }
 
         messagingTemplate.convertAndSend(
                 "/topic/presence",
