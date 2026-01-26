@@ -72,6 +72,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
             accessor.setUser(new StompPrincipal(userId));
             // ⭐ 세션에 저장
             accessor.getSessionAttributes().put("userId", userId);
+            accessor.getSessionAttributes().put("sessionId", accessor.getSessionId());
         }
         return message;
     }
