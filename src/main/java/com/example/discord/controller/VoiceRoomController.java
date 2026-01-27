@@ -1,15 +1,18 @@
 package com.example.discord.controller;
 
-import com.example.discord.dto.ChannelResponse;
-import com.example.discord.dto.CreateChannelRequest;
-import com.example.discord.dto.voice.VoiceRoom;
-import com.example.discord.dto.voice.VoiceRoomResponse;
+import com.example.discord.dto.voice.VoiceEvent;
+import com.example.discord.dto.voice.VoiceJoinRequest;
+import com.example.discord.security.UserPrincipal;
 import com.example.discord.service.VoiceRoomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/channels/{serverId}/channels")
@@ -17,28 +20,32 @@ import java.util.stream.Collectors;
 public class VoiceRoomController {
 
     private final VoiceRoomService voiceRoomService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-//    @PostMapping("/voice")
-//    public ChannelResponse createRoom(
-//            @PathVariable Long serverId,
-//            @RequestBody CreateChannelRequest req) {
-//        return voiceRoomService.createRoom(serverId, req.getName());
-//    }
-//
-//    @GetMapping
-//    public List<VoiceRoomResponse> getRooms() {
-//        return voiceRoomService.getRooms().stream()
-//                .map(r -> new VoiceRoomResponse(r.getId(), r.getName()))
-//                .collect(Collectors.toList());
-//    }
-//
-//    @PostMapping("/{roomId}/join")
-//    public void joinRoom(@PathVariable String roomId, @RequestParam String userId) {
-//        voiceRoomService.joinRoom(roomId, userId);
-//    }
-//
-//    @PostMapping("/{roomId}/leave")
-//    public void leaveRoom(@PathVariable String roomId, @RequestParam String userId) {
-//        voiceRoomService.leaveRoom(roomId, userId);
-//    }
+    /** 보이스 채널 입장 */
+    @PostMapping("/join")
+    public void join(@RequestBody VoiceJoinRequest req,
+                     @AuthenticationPrincipal UserPrincipal principal) {
+        String userId = principal.getId();
+
+        voiceRoomService.join(req.getServerId(), req.getChannelId(), userId);
+
+        messagingTemplate.convertAndSend(
+                "/topic/voice/" + req.getServerId(),
+                new VoiceEvent("JOIN", req.getChannelId(), userId)
+        );
+    }
+
+    /** 보이스 채널 퇴장 */
+    @PostMapping("/leave")
+    public void leave(@RequestBody VoiceJoinRequest req, Principal principal) {
+        String userId = principal.getName();
+
+        voiceRoomService.leave(req.getServerId(), req.getChannelId(), userId);
+
+        messagingTemplate.convertAndSend(
+                "/topic/voice/" + req.getServerId(),
+                new VoiceEvent("LEAVE", req.getChannelId(), userId)
+        );
+    }
 }

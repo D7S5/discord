@@ -8,6 +8,7 @@ import com.example.discord.repository.ChannelRepository;
 import com.example.discord.repository.ServerRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,35 +20,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class VoiceRoomService {
 
-    private final ServerRepository serverRepository;
-    private final ChannelRepository channelRepository;
+    private final RedisTemplate<String, String> redis;
+    private static final String KEY = "voice:channel:";
 
-    public ChannelResponse createRoom(Long serverId, String name) {
-        Server server = serverRepository.findById(serverId).orElseThrow();
-        Channel channel = Channel.voice(server, name);
-        channelRepository.save(channel);
-        return ChannelResponse.from(channel);
+    public void join(Long serverId, Long channelId, String userId) {
+        redis.opsForSet().add(KEY + serverId + ":" + channelId, userId);
     }
 
-//    public List<VoiceRoom> getRooms() {
-//        return new ArrayList<>(rooms.values());
-//    }
-//
-//    public VoiceRoom getRoom(String roomId) {
-//        return rooms.get(roomId);
-//    }
-//
-//    public void joinRoom(String roomId, String userId) {
-//        VoiceRoom room = rooms.get(roomId);
-//        if (room != null) {
-//            room.join(userId);
-//        }
-//    }
-//
-//    public void leaveRoom(String roomId, String userId) {
-//        VoiceRoom room = rooms.get(roomId);
-//        if (room != null) {
-//            room.leave(userId);
-//        }
-//    }
+    public void leave(Long serverId, Long channelId, String userId) {
+        redis.opsForSet().remove(KEY + serverId + ":" + channelId, userId);
+    }
 }
