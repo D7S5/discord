@@ -36,6 +36,12 @@ public class ChannelService {
         Server server = serverRepository.findById(serverId)
                 .orElseThrow();
 
+        if (type == ChannelType.VOICE) {
+            Channel channel = Channel.voice(server, name);
+            channelRepository.save(channel);
+            return ChannelResponse.from(channel);
+        }
+
         Channel channel = new Channel(server, name, type);
         channelRepository.save(channel);
 

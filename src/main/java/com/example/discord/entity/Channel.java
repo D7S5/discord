@@ -26,4 +26,12 @@ public class Channel {
         this.type = type;
         this.server = server;
     }
+
+    public static Channel voice(Server server, String name) {
+        Channel c = new Channel();
+        c.server = server;
+        c.name = name;
+        c.type = ChannelType.VOICE;
+        return c;
+    }
 }

@@ -40,5 +40,11 @@ public class VoiceSignalingController {
         );
     }
 
-
+//    @MessageMapping("/voice.signal")
+//    public void signaling(String payload, Principal principal) {
+//        String userId = principal.getName();
+//        // payload에 roomId + eventType + data 포함
+//        // 예: {"roomId":"xxx","type":"offer","sdp":"..."}
+//        messagingTemplate.convertAndSend("/topic/voice", payload);
+//    }
 }
