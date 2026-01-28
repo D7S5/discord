@@ -11,7 +11,15 @@ public class VoiceEvent {
 
     private String type;
 
-    private Long channelId;
+    private Long roomId;
 
     private String userId;
+
+    private boolean speaking;
+
+    public VoiceEvent(String type, Long roomId, String userId) {
+        this.type = type;
+        this.roomId = roomId;
+        this.userId = userId;
+    }
 }

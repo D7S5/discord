@@ -1,33 +1,62 @@
 package com.example.discord.service;
 
-import com.example.discord.dto.ChannelResponse;
-import com.example.discord.dto.voice.VoiceRoom;
-import com.example.discord.entity.Channel;
-import com.example.discord.entity.Server;
-import com.example.discord.repository.ChannelRepository;
-import com.example.discord.repository.ServerRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class VoiceRoomService {
 
-    private final RedisTemplate<String, String> redis;
-    private static final String KEY = "voice:channel:";
+    private final RedisTemplate<String, Object> redis;
 
-    public void join(Long serverId, Long channelId, String userId) {
-        redis.opsForSet().add(KEY + serverId + ":" + channelId, userId);
+    private String usersKey(Long roomId) {
+        return "voice:room:" + roomId + ":users";
     }
 
-    public void leave(Long serverId, Long channelId, String userId) {
-        redis.opsForSet().remove(KEY + serverId + ":" + channelId, userId);
+    private String speakingKey(Long roomId) {
+        return "voice:room:" + roomId + ":speaking";
+    }
+
+    /* 🔊 입장 */
+    public void join(Long roomId, String userId) {
+        redis.opsForSet().add(usersKey(roomId), userId);
+        redis.opsForHash().put(speakingKey(roomId), userId, false);
+    }
+
+    /* 🚪 퇴장 */
+    public void leave(Long roomId, String userId) {
+        redis.opsForSet().remove(usersKey(roomId), userId);
+        redis.opsForHash().delete(speakingKey(roomId), userId);
+    }
+
+    /* 🎙 말하는 중 */
+    public void setSpeaking(Long roomId, String userId, boolean speaking) {
+        redis.opsForHash().put(speakingKey(roomId), userId, speaking);
+    }
+
+    /* 👥 유저 목록 */
+    public List<Map<String, Object>> getUsers(Long roomId) {
+        Set<Object> users = redis.opsForSet().members(usersKey(roomId));
+        if (users == null) return Collections.emptyList();
+
+        Map<Object, Object> speakingMap =
+                redis.opsForHash().entries(speakingKey(roomId));
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Object userId : users) {
+            Map<String, Object> user = new HashMap<>();
+            user.put("userId", userId);
+            user.put(
+                    "speaking",
+                    Boolean.TRUE.equals(speakingMap.get(userId))
+            );
+            result.add(user);
+        }
+
+        return result;
     }
 }
