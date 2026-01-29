@@ -26,6 +26,9 @@ public class VoiceSocketController {
                      Principal principal) {
         voiceRoomService.join(req.getChannelId(), principal.getName());
 
+        System.out.println("ChannelId = " + req.getChannelId());
+        System.out.println("getUsers = " + voiceRoomService.getUsers(req.getChannelId()));
+
         messagingTemplate.convertAndSend(
                 "/topic/voice/" + req.getChannelId(),
                 voiceRoomService.getUsers(req.getChannelId())
@@ -35,6 +38,7 @@ public class VoiceSocketController {
     @MessageMapping("/voice.leave")
     public void leave(@Payload VoiceJoinRequest req,
                       Principal principal) {
+
         voiceRoomService.leave(req.getChannelId(), principal.getName());
 
         messagingTemplate.convertAndSend(

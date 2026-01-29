@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"server_id", "user_id"})
@@ -25,9 +27,13 @@ public class ServerMember {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public ServerMember(Server server, User user, Role role) {
+    private OffsetDateTime joinedAt;
+
+    public ServerMember(Server server, User user, Role role, OffsetDateTime joinedAt) {
         this.server = server;
         this.user = user;
         this.role = role;
+        this.joinedAt = joinedAt;
     }
+
 }

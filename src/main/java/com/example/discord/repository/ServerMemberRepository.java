@@ -1,6 +1,8 @@
 package com.example.discord.repository;
 
+import com.example.discord.entity.Server;
 import com.example.discord.entity.ServerMember;
+import com.example.discord.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
@@ -14,5 +16,7 @@ public interface ServerMemberRepository extends JpaRepository<ServerMember, Long
     boolean existsByServerIdAndUserId(Long serverId, String userId);
 
     List<ServerMember> findByServerId(Long serverId);
+
+    boolean existsByServerAndUser(Server server, User user);
 }
 

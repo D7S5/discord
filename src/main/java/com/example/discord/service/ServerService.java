@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,7 +40,8 @@ public class ServerService {
         ServerMember owner = new ServerMember(
                 server,
                 user,
-                Role.OWNER
+                Role.OWNER,
+                OffsetDateTime.now()
         );
 
         memberRepository.save(owner);

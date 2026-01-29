@@ -3,8 +3,7 @@ package com.example.discord.repository;
 import com.example.discord.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
@@ -13,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
+
+    List<User> findByIdIn(Collection<String> ids);
 }
