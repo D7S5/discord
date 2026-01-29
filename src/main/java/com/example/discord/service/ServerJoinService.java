@@ -1,6 +1,7 @@
 package com.example.discord.service;
 
 import com.example.discord.dto.InviteCreateRequest;
+import com.example.discord.dto.InvitePreviewResponse;
 import com.example.discord.dto.InviteResponse;
 import com.example.discord.dto.ServerJoinResponse;
 import com.example.discord.entity.*;
@@ -86,6 +87,10 @@ public class ServerJoinService {
             throw new IllegalStateException("INVITE_EXPIRED");
         }
 
+        if (invite.isMaxUsed()) {
+            throw new IllegalStateException("INVITE_MAX_USED");
+        }
+
         Server server = invite.getServer();
 
         if (serverMemberRepository.existsByServerAndUser(server, user)) {
@@ -104,5 +109,24 @@ public class ServerJoinService {
         invite.increaseUseCount();
 
         return ServerJoinResponse.from(server, member);
+    }
+
+    public InvitePreviewResponse preview(String code) {
+        Invite invite = inviteRepository.findByCode(code)
+                .orElseThrow(() -> new IllegalArgumentException("INVALID_INVITE"));
+
+        if (invite.isExpired()) {
+            throw new IllegalStateException("INVITE_EXPIRED");
+        }
+
+        System.out.println("Invite code = " + code);
+
+        Server server = invite.getServer();
+
+        return InvitePreviewResponse.builder()
+                .serverId(server.getId())
+                .serverName(server.getName())
+                .memberCount(server.getMembers().size())
+                .build();
     }
 }

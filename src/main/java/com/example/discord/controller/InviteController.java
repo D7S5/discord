@@ -1,7 +1,10 @@
 package com.example.discord.controller;
 
 import com.example.discord.dto.InviteCreateRequest;
+import com.example.discord.dto.InvitePreviewResponse;
 import com.example.discord.dto.InviteResponse;
+import com.example.discord.entity.Invite;
+import com.example.discord.entity.Server;
 import com.example.discord.security.UserPrincipal;
 import com.example.discord.service.ServerJoinService;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +29,10 @@ public class InviteController {
                 authUser.getId(),
                 request
         );
+    }
+
+    @GetMapping("/{code}")
+    public InvitePreviewResponse preview(@PathVariable String code) {
+        return inviteService.preview(code);
     }
 }

@@ -32,7 +32,11 @@ public class Invite {
     private Integer maxUses;         // null = 무제한
     private Integer useCount = 0;
 
+    @Version
+    private Long version;
+
     private OffsetDateTime createdAt;
+
 
     public Invite(Server server, User creator,
                   OffsetDateTime expiresAt, Integer maxUses, String inviteCode) {
@@ -56,5 +60,9 @@ public class Invite {
 
     public void increaseUseCount() {
         this.useCount++;
+    }
+
+    public boolean isMaxUsed() {
+        return maxUses != null && useCount >= maxUses;
     }
 }

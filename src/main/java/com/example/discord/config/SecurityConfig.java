@@ -4,6 +4,7 @@ import com.example.discord.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -33,6 +34,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/channels/friends").authenticated()
                         .requestMatchers("/api/dm/**").authenticated()
                         .requestMatchers("/api/voice/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/invites/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/invites/*/join").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
