@@ -35,12 +35,12 @@ public class Invite {
     private OffsetDateTime createdAt;
 
     public Invite(Server server, User creator,
-                  OffsetDateTime expiresAt, Integer maxUses) {
+                  OffsetDateTime expiresAt, Integer maxUses, String inviteCode) {
         this.server = server;
         this.creator = creator;
         this.expiresAt = expiresAt;
         this.maxUses = maxUses;
-        this.code = UUID.randomUUID().toString().substring(0, 8);
+        this.code = inviteCode;
         this.createdAt = OffsetDateTime.now();
     }
 
