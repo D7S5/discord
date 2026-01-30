@@ -19,7 +19,7 @@ public class InviteController {
 
     private final ServerJoinService inviteService;
 
-    @PostMapping("/servers/{serverId}")
+    @PostMapping("/channels/{serverId}")
     public InviteResponse createInvite(
             @PathVariable Long serverId,
             @RequestBody InviteCreateRequest request,

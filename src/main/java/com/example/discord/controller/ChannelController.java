@@ -21,6 +21,10 @@ public class ChannelController {
             @RequestBody CreateChannelRequest request,
             @AuthenticationPrincipal UserPrincipal user
             ) {
-        return channelService.createChannel(serverId, request.getName(), request.getType(), user.getId());
+        return channelService.createChannel(
+                serverId,
+                request.getName(),
+                request.getType(),
+                user.getId());
     }
 }

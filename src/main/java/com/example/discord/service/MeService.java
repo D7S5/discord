@@ -18,17 +18,17 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MeService {
 
-    private final FriendRepository friendRepo;
-    private final DmRoomRepository dmRepo;
+    private final FriendRepository friendRepository;
+    private final DmRoomRepository dmRoomRepository;
 
     public MeResponse getMePage(String userId) {
 
-        List<FriendListDto> friends = friendRepo.findFriends(userId)
+        List<FriendListDto> friends = friendRepository.findFriends(userId)
                 .stream()
                 .map(f -> new FriendListDto(f.getOther(userId)))
                 .toList();
 
-        List<DmRoomDto> dmRooms = dmRepo.findDmRooms(userId)
+        List<DmRoomDto> dmRooms = dmRoomRepository.findDmRooms(userId)
                 .stream()
                 .map(d -> {
                         User other = d.getUserA().getId().equals(userId)

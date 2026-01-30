@@ -25,8 +25,6 @@ public class WebSocketConnectHandler {
     public void handleConnect(SessionConnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String userId = accessor.getUser().getName();
-        System.out.println("[Connect] userId = " + userId);
 //        String serverIdHeader = accessor.getFirstNativeHeader("serverId");
 
 //        if (serverIdHeader == null) return ;

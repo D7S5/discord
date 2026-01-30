@@ -24,24 +24,20 @@ public class VoiceRoomService {
         return "voice:room:" + roomId + ":speaking";
     }
 
-    /* 🔊 입장 */
     public void join(Long roomId, String userId) {
         redis.opsForSet().add(usersKey(roomId), userId);
         redis.opsForHash().put(speakingKey(roomId), userId, false);
     }
 
-    /* 🚪 퇴장 */
     public void leave(Long roomId, String userId) {
         redis.opsForSet().remove(usersKey(roomId), userId);
         redis.opsForHash().delete(speakingKey(roomId), userId);
     }
 
-    /* 🎙 말하는 중 */
     public void setSpeaking(Long roomId, String userId, boolean speaking) {
         redis.opsForHash().put(speakingKey(roomId), userId, speaking);
     }
 
-    /* 👥 유저 목록 */
     public List<Map<String, Object>> getUsers(Long roomId) {
         Set<Object> rawusers = redis.opsForSet().members(usersKey(roomId));
         if (rawusers == null || rawusers.isEmpty()) return Collections.emptyList();

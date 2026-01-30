@@ -26,8 +26,7 @@ public class VoiceSocketController {
                      Principal principal) {
         voiceRoomService.join(req.getChannelId(), principal.getName());
 
-        System.out.println("ChannelId = " + req.getChannelId());
-        System.out.println("getUsers = " + voiceRoomService.getUsers(req.getChannelId()));
+//        System.out.println("getUsers = " + voiceRoomService.getUsers(req.getChannelId()));
 
         messagingTemplate.convertAndSend(
                 "/topic/voice/" + req.getChannelId(),
