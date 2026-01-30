@@ -101,10 +101,15 @@ public class ServerService {
                         onlineUserIds.contains(m.getUser().getId())
                 )).toList();
 
+        Role myRole = memberRepository
+                .findRoleByServerIdAndUserId(serverId, userId)
+                .orElseThrow(() -> new AccessDeniedException("NOT_A_MEMBER"));
+
         return new ServerLobbyResponse(
                 ServerSummaryResponse.from(server),
                 channels,
-                memberlist
+                memberlist,
+                myRole
         );
     }
 

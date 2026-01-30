@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Transactional
@@ -37,10 +38,14 @@ public class ServerJoinService {
         Server server = serverRepository.findById(serverId)
                 .orElseThrow(() -> new IllegalArgumentException("SERVER_NOT_FOUND"));
 
-        // (선택) 권한 체크
-//        if (!server.isAdmin(user)) {
-//            throw new IllegalStateException("NO_PERMISSION");
-//        }
+        boolean isAdmin = serverMemberRepository.existsByServerIdAndUserIdAndRoleIn(
+                serverId,
+                userId,
+                List.of(Role.OWNER, Role.ADMIN));
+
+        if (!isAdmin) {
+            throw new IllegalStateException("NO_PERMISSION");
+        }
 
         OffsetDateTime expiresAt = null;
         if (request.getExpireMinutes() != null) {

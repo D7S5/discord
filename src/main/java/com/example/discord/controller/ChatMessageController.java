@@ -23,6 +23,7 @@ public class ChatMessageController {
             ChatMessageRequest request,
             SimpMessageHeaderAccessor accessor
             ) {
+
         String userId = (String) accessor.getSessionAttributes().get("userId");
 
         if (userId == null) {

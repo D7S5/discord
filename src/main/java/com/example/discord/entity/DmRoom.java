@@ -28,7 +28,7 @@ public class DmRoom extends BaseEntity {
 
     public static DmRoom create(User a, User b) {
         DmRoom dmRoom = new DmRoom();
-        if(a.getId().compareTo(b.getId()) < 0) {
+        if (a.getId().compareTo(b.getId()) < 0) {
             dmRoom.userA = a;
             dmRoom.userB = b;
         } else {

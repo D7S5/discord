@@ -28,7 +28,6 @@ public class DmMessageService {
                 .toList();
     }
     public DmMessage save(String roomId, String senderId, String content) {
-        // room + sender + receiver 검증 로직
         return dmMessageRepository.save(
                 new DmMessage(roomId, senderId, content)
         );

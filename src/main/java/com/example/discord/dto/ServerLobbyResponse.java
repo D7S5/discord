@@ -1,5 +1,6 @@
 package com.example.discord.dto;
 
+import com.example.discord.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,4 +14,5 @@ public class ServerLobbyResponse {
     private ServerSummaryResponse server;
     private List<ChannelResponse> channels;
     private List<MemberStatusResponse> members;
+    private Role myRole;
 }

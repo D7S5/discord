@@ -56,7 +56,6 @@ public class DmMessageController {
                 receiverId,
                 "/queue/dm",
                 DmMessageResponse.from(message)
-
         );
 
         messagingTemplate.convertAndSendToUser(
