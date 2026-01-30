@@ -11,6 +11,8 @@ public class ServerResponse {
     private String name;
 
     public static ServerResponse from(Server server) {
-        return new ServerResponse(server.getId(), server.getName());
+        return new ServerResponse(
+                server.getId(),
+                server.getName());
     }
 }

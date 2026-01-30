@@ -108,6 +108,9 @@ public class ServerJoinService {
         // 4. 초대 사용 횟수 증가
         invite.increaseUseCount();
 
+        System.out.println(server.getName());
+        System.out.println(member.getUser().getUsername());
+
         return ServerJoinResponse.from(server, member);
     }
 
@@ -118,8 +121,6 @@ public class ServerJoinService {
         if (invite.isExpired()) {
             throw new IllegalStateException("INVITE_EXPIRED");
         }
-
-        System.out.println("Invite code = " + code);
 
         Server server = invite.getServer();
 

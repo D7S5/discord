@@ -11,6 +11,8 @@ public class ServerSummaryResponse {
     private String name;
 
     public static ServerSummaryResponse from(Server server) {
-        return new ServerSummaryResponse(server.getId(), server.getName());
+        return new ServerSummaryResponse(
+                server.getId(),
+                server.getName());
     }
 }

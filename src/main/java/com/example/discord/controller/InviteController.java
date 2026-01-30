@@ -3,6 +3,7 @@ package com.example.discord.controller;
 import com.example.discord.dto.InviteCreateRequest;
 import com.example.discord.dto.InvitePreviewResponse;
 import com.example.discord.dto.InviteResponse;
+import com.example.discord.dto.ServerJoinResponse;
 import com.example.discord.entity.Invite;
 import com.example.discord.entity.Server;
 import com.example.discord.security.UserPrincipal;
@@ -29,6 +30,13 @@ public class InviteController {
                 authUser.getId(),
                 request
         );
+    }
+    @PostMapping("/{code}/join")
+    public ServerJoinResponse joinServer(
+            @PathVariable String code,
+            @AuthenticationPrincipal UserPrincipal user
+    ) {
+        return inviteService.joinServer(code, user.getId());
     }
 
     @GetMapping("/{code}")

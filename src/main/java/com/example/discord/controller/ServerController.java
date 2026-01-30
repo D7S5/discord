@@ -46,7 +46,6 @@ public class ServerController {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        System.out.println("user = " + user.getId());
         return service.getMyServers(user.getId());
     }
 }
