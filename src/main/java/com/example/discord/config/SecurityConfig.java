@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/voice/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/invites/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/invites/*/join").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 
@@ -13,6 +14,7 @@ import java.time.OffsetDateTime;
 })
 @NoArgsConstructor
 @Getter
+@Setter
 public class ServerMember {
 
     @Id @GeneratedValue
@@ -40,4 +42,7 @@ public class ServerMember {
         return role == Role.OWNER || role == Role.ADMIN;
     }
 
+    public void changeRole(Role role) {
+        this.role = role;
+    }
 }

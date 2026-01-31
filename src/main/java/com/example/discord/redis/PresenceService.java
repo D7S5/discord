@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class PresenceService {
 
     private final StringRedisTemplate redis;
-    private static final long TTL = 60;
+    private static final long TTL = 180;
     private static String key = "online:server:";
 
     public void online(Long serverId, String userId) {

@@ -20,11 +20,11 @@ public class FriendService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
 
-    public void sendRequest(String fromUserId, String usernameTag) {
+    public void sendRequest(String fromUserId, String username) {
 
         User me = userRepository.findById(fromUserId).orElseThrow();
 
-        User target = userRepository.findByUsername(usernameTag)
+        User target = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (fromUserId.equals(target.getId())) {
