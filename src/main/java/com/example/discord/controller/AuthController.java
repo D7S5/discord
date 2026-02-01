@@ -8,7 +8,9 @@ import com.example.discord.repository.UserRepository;
 import com.example.discord.security.JwtProvider;
 import com.example.discord.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.Token;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +28,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
 
-        String token = jwtProvider.generateToken(user.getId());
+        TokenResponse res = authService.login(request);
 
-        return ResponseEntity.ok(new TokenResponse(token));
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/register")
