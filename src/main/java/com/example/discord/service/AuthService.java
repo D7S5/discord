@@ -7,19 +7,14 @@ import com.example.discord.entity.User;
 import com.example.discord.repository.UserRepository;
 import com.example.discord.security.JwtProvider;
 import com.example.discord.security.UserPrincipal;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +33,6 @@ public class AuthService {
         );
 
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-
-//        User user = userRepository.findByEmail(principal.getEmail())
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String accessToken = jwtProvider.generateToken(principal.getId());
 
