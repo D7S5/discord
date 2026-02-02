@@ -22,7 +22,7 @@ public class JwtProvider {
     @Value("${jwt.access-expiration}")
     private long accessExpiration;
 
-    @Value("${jwt.refresh-expiration")
+    @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
 
     private Key getKey() {

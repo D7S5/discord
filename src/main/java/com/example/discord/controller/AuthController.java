@@ -1,6 +1,7 @@
 package com.example.discord.controller;
 
 import com.example.discord.dto.LoginRequest;
+import com.example.discord.dto.RefreshRequest;
 import com.example.discord.dto.TokenResponse;
 import com.example.discord.dto.register.RegisterRequest;
 import com.example.discord.entity.User;
@@ -20,17 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
-
     private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-
         TokenResponse res = authService.login(request);
+        return ResponseEntity.ok(res);
+    }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody RefreshRequest request) {
+        TokenResponse res = authService.refresh(request.getRefreshToken());
         return ResponseEntity.ok(res);
     }
 
@@ -38,7 +41,8 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         String userId = authService.register(request);
         String token = jwtProvider.generateToken(userId);
+        String refreshToken = jwtProvider.generateRefreshToken(userId);
 
-        return ResponseEntity.ok(new TokenResponse(token));
+        return ResponseEntity.ok(new TokenResponse(token, refreshToken));
     }
 }
