@@ -8,6 +8,8 @@ import com.example.discord.entity.User;
 import com.example.discord.repository.UserRepository;
 import com.example.discord.security.JwtProvider;
 import com.example.discord.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +23,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserRepository userRepository;
+
     private final JwtProvider jwtProvider;
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        TokenResponse res = authService.login(request);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request,
+                                   HttpServletResponse response) {
+        TokenResponse res = authService.login(request, response);
         return ResponseEntity.ok(res);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody RefreshRequest request) {
-        TokenResponse res = authService.refresh(request.getRefreshToken());
+    public ResponseEntity<?> refresh(HttpServletRequest request,
+                                     HttpServletResponse response) {
+        String refreshToken = jwtProvider.getRefreshToken(request);
+
+        TokenResponse res = authService.refresh(refreshToken, response);
         return ResponseEntity.ok(res);
     }
 
@@ -41,8 +47,8 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         String userId = authService.register(request);
         String token = jwtProvider.generateToken(userId);
-        String refreshToken = jwtProvider.generateRefreshToken(userId);
+//        String refreshToken = jwtProvider.generateRefreshToken(userId);
 
-        return ResponseEntity.ok(new TokenResponse(token, refreshToken));
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 }
