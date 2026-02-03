@@ -29,7 +29,7 @@ public class JwtProvider {
 
     private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
 
-    private Key getKey() {
+    public Key getKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
