@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = resolveToken(request);
 
-            if (token != null && jwtTokenProvider.validateToken(token)) {
+            if (token != null && jwtTokenProvider.validateAccessToken(token)) {
 
                 String userId = jwtTokenProvider.getUserId(token);
 
@@ -45,12 +45,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 userPrincipal.getAuthorities()
                         );
 
+                log.info("auth = {}", authentication);
+                log.info("authorities = {}", authentication.getAuthorities());
+
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
-            log.error("JWT 인증 실패");
+            log.error("JWT 인증 실패", e);
         }
 
         filterChain.doFilter(request, response);
@@ -58,6 +61,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
+        log.info("Authorization header = [{}]", bearer);
+
         if (bearer != null && bearer.startsWith("Bearer ")) {
             return bearer.substring(7);
         }

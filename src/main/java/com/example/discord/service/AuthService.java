@@ -16,6 +16,7 @@
     import jakarta.servlet.http.Cookie;
     import jakarta.servlet.http.HttpServletResponse;
     import lombok.RequiredArgsConstructor;
+    import lombok.extern.slf4j.Slf4j;
     import org.springframework.beans.factory.annotation.Value;
     import org.springframework.dao.DataIntegrityViolationException;
     import org.springframework.data.redis.core.StringRedisTemplate;
@@ -33,6 +34,7 @@
     @Service
     @RequiredArgsConstructor
     @Transactional
+    @Slf4j
     public class AuthService {
 
         private final UserRepository userRepository;
@@ -61,7 +63,7 @@
 
             UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-            String accessToken = jwtProvider.generateToken(principal.getId());
+            String accessToken = jwtProvider.generateAccessToken(principal.getId());
             String refreshToken = jwtProvider.generateRefreshToken(principal.getId());
 
             String hashedRefreshToken = TokenHashUtil.hash(refreshToken);
@@ -72,6 +74,8 @@
                     jwtRefreshTokenExpiry,
                     TimeUnit.MILLISECONDS
             );
+
+            log.info("LOGIN refresh hash={}", hashedRefreshToken);
 
             cookieUtil.addRefreshTokenCookie(response, refreshToken);
 
@@ -111,7 +115,8 @@
                 throw new RuntimeException("Refresh Token missing");
             }
 
-            if ( !jwtProvider.validateToken(oldRefreshToken)) {
+            if ( !jwtProvider.validateRefreshToken(oldRefreshToken)) {
+                log.warn("oldRefreshToken = " + oldRefreshToken);
                 throw new RuntimeException("invalid Refresh Token");
             }
 
@@ -134,14 +139,20 @@
                 throw new SecurityException("Refresh token Mismatch");
             }
 
+            long ttl = Math.max(remainingTTL(oldRefreshToken), 1000);
+            log.info("RefreshToken remaining TTL = {}", ttl);
+
+            log.info("REFRESH old hash={}", oldHashToken);
+            log.info("REDIS saved hash={}", savedHash);
+
             redis.opsForValue().set(
                     REDIS_BLACKLIST_PREFIX + oldHashToken,
                     "USED",
-                    remainingTTL(oldRefreshToken),
+                    ttl,
                     TimeUnit.MILLISECONDS
             );
 
-            String newAccessToken = jwtProvider.generateToken(userId);
+            String newAccessToken = jwtProvider.generateAccessToken(userId);
             String newRefreshToken = jwtProvider.generateRefreshToken(userId);
             String hashedRefreshToken = TokenHashUtil.hash(newRefreshToken);
 

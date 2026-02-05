@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CookieUtil {
     private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
-    private final JwtProvider jwtTokenProvider;
 
     public void addRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
 
         ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, refreshToken)
                 .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
+                .secure(false)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(60 * 60 * 24 * 7)
                 .build();
@@ -30,13 +29,13 @@ public class CookieUtil {
 
         ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/")
                 .maxAge(0)
-                .sameSite("None")
+                .sameSite("Lax")
                 .build();
 
-        response.addHeader("Set-cookie", cookie.toString());
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     public String getRefreshToken(HttpServletRequest request) {
