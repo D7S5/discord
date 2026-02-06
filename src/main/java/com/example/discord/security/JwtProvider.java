@@ -1,9 +1,6 @@
 package com.example.discord.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
@@ -78,31 +75,22 @@ public class JwtProvider {
         try {
             Claims claims = parseClaims(token);
 
-            log.info("JWT claims = {}", claims);
-
-            Date exp = claims.getExpiration();
-            log.info("exp = {}, now = {}", exp, new Date());
-
-            String type = claims.get("type", String.class);
-            log.info("type = {}", type);
-
-            if (exp == null || exp.before(new Date())) {
-                log.warn("❌ token expired");
-                return false;
-            }
-
-            if (!"ACCESS".equals(type)) {
-                log.warn("❌ token type mismatch");
+            if (!"ACCESS".equals(claims.get("type", String.class))) {
                 return false;
             }
 
             return true;
 
-        } catch (Exception e) {
-            log.error("❌ validateAccessToken exception", e);
+        } catch (ExpiredJwtException e) {
+            log.info("🔁 Access token expired");
+            return false;
+
+        } catch (JwtException | IllegalArgumentException e) {
+            log.warn("❌ Invalid access token");
             return false;
         }
     }
+
     public boolean validateRefreshToken(String token) {
         try {
             Claims claims = parseClaims(token);

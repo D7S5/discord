@@ -5,11 +5,9 @@ import com.example.discord.dto.InvitePreviewResponse;
 import com.example.discord.dto.InviteResponse;
 import com.example.discord.dto.ServerJoinResponse;
 import com.example.discord.entity.*;
-import com.example.discord.repository.InviteRepository;
-import com.example.discord.repository.ServerMemberRepository;
-import com.example.discord.repository.ServerRepository;
-import com.example.discord.repository.UserRepository;
+import com.example.discord.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +18,14 @@ import java.util.UUID;
 @Transactional
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ServerJoinService {
 
     private final UserRepository userRepository;
     private final InviteRepository inviteRepository;
     private final ServerMemberRepository serverMemberRepository;
     private final ServerRepository serverRepository;
+    private final ChannelRepository channelRepository;
 
     public InviteResponse createInviteCode(
             Long serverId,
@@ -134,5 +134,20 @@ public class ServerJoinService {
                 .serverName(server.getName())
                 .memberCount(server.getMembers().size())
                 .build();
+    }
+
+    @Transactional
+    public void leaveServer(Long serverId, String userId) {
+        ServerMember member = serverMemberRepository.findByServerIdAndUserId(serverId, userId)
+                .orElseThrow(() -> new RuntimeException("Not a server member"));
+
+        if (member.isOwner()) {
+            channelRepository.deleteByServerId(serverId);
+
+            serverRepository.deleteByServerId(serverId);
+            log.info("Server deleted: id={}, owner={}", serverId, userId);
+        }
+
+        serverMemberRepository.delete(member);
     }
 }

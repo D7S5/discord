@@ -1,6 +1,7 @@
 package com.example.discord.controller;
 
 import com.example.discord.dto.CreateServerRequest;
+import com.example.discord.dto.ServerListResponse;
 import com.example.discord.dto.ServerLobbyResponse;
 import com.example.discord.dto.ServerResponse;
 import com.example.discord.security.UserPrincipal;
@@ -37,11 +38,20 @@ public class ServerController {
         return res;
     }
     @GetMapping("/me")
-    public List<ServerResponse> me
+    public List<ServerListResponse> me
             (@AuthenticationPrincipal UserPrincipal user) {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         return service.getMyServers(user.getId());
     }
+
+    @GetMapping
+    public List<ServerListResponse> getMyServers(
+            @AuthenticationPrincipal UserPrincipal user
+    ) {
+        return service.getMyServers(user.getId());
+    }
+
+
 }

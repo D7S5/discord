@@ -29,5 +29,13 @@ public interface ServerMemberRepository extends JpaRepository<ServerMember, Long
       and sm.user.id = :userId
 """)
     Optional<Role> findRoleByServerIdAndUserId(@Param("serverId") Long serverId, @Param("userId") String userId);
+
+    @Query("""
+        select sm
+        from ServerMember sm
+        join fetch sm.server s
+        where sm.user.id = :userId
+    """)
+    List<ServerMember> findMyServers(@Param("userId") String userId);
 }
 

@@ -45,8 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 userPrincipal.getAuthorities()
                         );
 
-                log.info("auth = {}", authentication);
-                log.info("authorities = {}", authentication.getAuthorities());
+//                log.info("auth = {}", authentication);
+//                log.info("authorities = {}", authentication.getAuthorities());
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
-        log.info("Authorization header = [{}]", bearer);
+//        log.info("Authorization header = [{}]", bearer);
 
         if (bearer != null && bearer.startsWith("Bearer ")) {
             return bearer.substring(7);

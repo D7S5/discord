@@ -38,6 +38,10 @@ public class ServerMember {
         this.joinedAt = joinedAt;
     }
 
+    public boolean isOwner() {
+        return role == Role.OWNER;
+    }
+
     public boolean isAdmin() {
         return role == Role.OWNER || role == Role.ADMIN;
     }

@@ -51,6 +51,26 @@ public class ServerService {
         return ServerResponse.from(server);
     }
 
+    public List<ServerListResponse> getMyServers(String userId) {
+        return memberRepository.findMyServers(userId)
+                .stream()
+                .map(sm -> {
+                    Server server = sm.getServer();
+
+                    boolean isOwner =
+                            server.getOwner().getId().equals(userId);
+
+                    return new ServerListResponse(
+                            server.getId(),
+                            server.getName(),
+//                            server.getIconUrl(),
+                            isOwner,
+                            sm.getRole().name() // OWNER / ADMIN / MEMBER
+                    );
+                })
+                .toList();
+    }
+
     public void deleteServer(Long serverId, String userId) {
         ServerMember member = memberRepository
                 .findByServerIdAndUserId(serverId, userId)
@@ -62,6 +82,8 @@ public class ServerService {
 
         serverRepository.deleteById(serverId);
     }
+
+
 
     private void createDefaultChannels(Server server) {
         Channel general = new Channel(server, "general", ChannelType.TEXT);
@@ -113,10 +135,10 @@ public class ServerService {
         );
     }
 
-    public List<ServerResponse> getMyServers(String userId) {
-        return serverRepository.findByMemberUserId(userId)
-                .stream()
-                .map(ServerResponse::from)
-                .toList();
-    }
+//    public List<ServerResponse> getMyServers(String userId) {
+//        return serverRepository.findByMemberUserId(userId)
+//                .stream()
+//                .map(ServerResponse::from)
+//                .toList();
+//    }
 }

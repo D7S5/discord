@@ -2,6 +2,7 @@ package com.example.discord.repository;
 
 import com.example.discord.entity.Server;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
         where m.user.id = :userId
     """)
     List<Server> findByMemberUserId(String userId);
+
+    @Modifying
+    @Query("delete from Channel c where c.server.id = :serverId")
+    void deleteByServerId(Long serverId);
 }

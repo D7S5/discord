@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ChannelRepository extends JpaRepository<Channel, Long> {
     List<Channel> findByServerIdOrderByIdAsc(Long serverId);
+
+    void deleteByServerId(Long serverId);
 }
