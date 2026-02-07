@@ -8,17 +8,26 @@ import com.example.discord.repository.ServerMemberRepository;
 import com.example.discord.repository.ServerRepository;
 import com.example.discord.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ServerService {
 
     private final ServerRepository serverRepository;
@@ -48,7 +57,7 @@ public class ServerService {
 
         createDefaultChannels(server);
 
-        return ServerResponse.from(server);
+        return ServerResponse.from(owner);
     }
 
     public List<ServerListResponse> getMyServers(String userId) {
@@ -135,10 +144,95 @@ public class ServerService {
         );
     }
 
-//    public List<ServerResponse> getMyServers(String userId) {
-//        return serverRepository.findByMemberUserId(userId)
-//                .stream()
-//                .map(ServerResponse::from)
-//                .toList();
-//    }
+    @Transactional
+    public void updateServerIcon(
+            Long serverId,
+            String userId,
+            MultipartFile file
+    ) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 없습니다");
+        }
+        ServerMember member = memberRepository
+                .findByServerIdAndUserId(serverId, userId)
+                .orElseThrow(() -> new SecurityException("서버 멤버 아님"));
+
+        if (!member.isOwner()) {
+            throw new SecurityException("OWNER만 아이콘 수정 가능");
+        }
+
+        Server server = member.getServer();
+
+        try {
+            String dirPath = "uploads/server/" + serverId;
+            Files.createDirectories(Paths.get(dirPath));
+
+            String filePath = dirPath + "/icon.png";
+
+            Thumbnails.of(file.getInputStream())
+                    .size(48, 48)
+                    .outputFormat("png")
+                    .outputQuality(1.0)
+                    .toFile(filePath);
+
+            file.transferTo(Paths.get(filePath));
+
+            server.setIconUrl("/uploads/server/" + serverId + "/icon.png");
+
+        } catch (IOException e) {
+            throw new RuntimeException("아이콘 업로드 실패", e);
+        }
+    }
+
+
+    @Transactional
+    public void deleteServerIcon(Long serverId, String userId) throws IOException {
+
+        Server server = serverRepository.findById(serverId)
+                .orElseThrow(() -> new RuntimeException("Server not found"));
+
+        if (!server.isOwner(userId)) {
+            throw new SecurityException("No permission");
+        }
+
+        if (server.getIconUrl() != null &&
+                !server.getIconUrl().contains("default")) {
+
+            Path path = Paths.get(
+                    server.getIconUrl().replace("/uploads/", "uploads/")
+            );
+            Files.deleteIfExists(path);
+        }
+
+        server.setIconUrl("/uploads/server/default.png");
+    }
+
+    public String saveServerIcon(MultipartFile file) throws IOException {
+        String filename = UUID.randomUUID() + ".png";
+
+        Path dir = Paths.get("uploads/server");
+        Files.createDirectories(dir);
+
+        Path path = dir.resolve(filename);
+        file.transferTo(path);
+
+        return "/uploads/server/" + filename;
+    }
+
+    public List<ServerResponse> getServers(String userId) {
+        return memberRepository.findByUserId(userId)
+                .stream()
+                .map(ServerResponse::from)
+                .toList();
+
+    }
+
+    public ServerResponse getServer(Long serverId, String userId) {
+
+        ServerMember member = memberRepository
+                .findByServerIdAndUserId(serverId, userId)
+                .orElseThrow(() -> new AccessDeniedException("서버 멤버가 아님"));
+
+        return ServerResponse.from(member);
+    }
 }

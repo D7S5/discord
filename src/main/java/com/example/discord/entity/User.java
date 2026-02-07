@@ -22,7 +22,7 @@ public class User extends BaseEntity {
 
     private String discriminator;
 
-    private String avatarUrl;
+    private String iconUrl;
 
     private UserStatus status;
 

@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Server {
@@ -24,6 +26,8 @@ public class Server {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    private String IconUrl;
+
     @OneToMany(mappedBy = "server", cascade = CascadeType.ALL)
     private List<Channel> channels = new ArrayList<>();
 
@@ -37,5 +41,9 @@ public class Server {
     public Server(String name, User owner) {
         this.name = name;
         this.owner = owner;
+    }
+
+    public boolean isOwner(String userId) {
+        return this.owner.getId().equals(userId);
     }
 }

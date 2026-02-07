@@ -19,6 +19,7 @@ public interface ServerMemberRepository extends JpaRepository<ServerMember, Long
     boolean existsByServerIdAndUserId(Long serverId, String userId);
     boolean existsByServerIdAndUserIdAndRoleIn(Long serverId, String userId, Collection<Role> roles);
     List<ServerMember> findByServerId(Long serverId);
+    List<ServerMember> findByUserId(String userId);
 
     boolean existsByServerAndUser(Server server, User user);
 

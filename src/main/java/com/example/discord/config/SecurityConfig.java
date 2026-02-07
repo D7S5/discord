@@ -31,6 +31,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/uploads/**",
+                                "/css/**",
+                                "/js/**"
+                        ).permitAll()
                         .requestMatchers("/api/channels/me").authenticated()
                         .requestMatchers("/api/channels/**").authenticated()
                         .requestMatchers("/api/channels/@me").authenticated()
