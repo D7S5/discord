@@ -207,18 +207,6 @@ public class ServerService {
         server.setIconUrl("/uploads/server/default.png");
     }
 
-    public String saveServerIcon(MultipartFile file) throws IOException {
-        String filename = UUID.randomUUID() + ".png";
-
-        Path dir = Paths.get("uploads/server");
-        Files.createDirectories(dir);
-
-        Path path = dir.resolve(filename);
-        file.transferTo(path);
-
-        return "/uploads/server/" + filename;
-    }
-
     public List<ServerResponse> getServers(String userId) {
         return memberRepository.findByUserId(userId)
                 .stream()
