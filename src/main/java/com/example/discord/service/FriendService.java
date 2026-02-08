@@ -39,7 +39,6 @@ public class FriendService {
         friendRepository.save(friendship);
     }
 
-    @Transactional
     public void acceptRequest(String myUserId, String friendshipId) {
 
         Friendship friendship = friendRepository.findById(friendshipId)

@@ -24,6 +24,9 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     private User sender;
 
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
+
     @Column(nullable = false)
     private String content;
 

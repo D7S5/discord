@@ -1,6 +1,7 @@
 package com.example.discord.dto;
 
 import com.example.discord.entity.Message;
+import com.example.discord.entity.MessageType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,6 +13,7 @@ public class MessageResponse {
     private Long id;
     private String senderName;
     private String content;
+    private MessageType type;
     private OffsetDateTime createdAt;
 
     public static MessageResponse from(Message m) {
@@ -19,6 +21,7 @@ public class MessageResponse {
                 .id(m.getId())
                 .senderName(m.getSender().getUsername())
                 .content(m.getContent())
+                .type(m.getType())
                 .createdAt(m.getCreatedAt())
                 .build();
     }

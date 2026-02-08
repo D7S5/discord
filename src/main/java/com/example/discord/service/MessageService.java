@@ -4,6 +4,7 @@ import com.example.discord.dto.ChatMessageRequest;
 import com.example.discord.dto.MessageResponse;
 import com.example.discord.entity.Channel;
 import com.example.discord.entity.Message;
+import com.example.discord.entity.MessageType;
 import com.example.discord.entity.User;
 import com.example.discord.repository.ChannelRepository;
 import com.example.discord.repository.MessageRepository;
@@ -31,9 +32,16 @@ public class MessageService {
         User user = userRepository.findById(userId)
                 .orElseThrow();
 
+        MessageType type = request.getType() != null
+                ? request.getType()
+                : MessageType.TEXT;
+
+        System.out.println("저장 type = " + type);
+
         Message message = Message.builder()
                 .channel(channel)
                 .sender(user)
+                .type(type)
                 .content(request.getContent())
                 .createdAt(OffsetDateTime.now())
                 .build();
