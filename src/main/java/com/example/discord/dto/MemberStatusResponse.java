@@ -9,5 +9,6 @@ public class MemberStatusResponse {
     private String userId;
     private String username;
     private String role;
+    private String iconUrl;
     private boolean online;
 }

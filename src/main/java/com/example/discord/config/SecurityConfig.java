@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(
+                                "/images/avatar/**",
                                 "/images/chat/**",
                                 "/uploads/**",
                                 "/css/**",

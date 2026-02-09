@@ -1,6 +1,7 @@
 package com.example.discord.controller;
 
 import com.example.discord.dto.LoginRequest;
+import com.example.discord.dto.LoginResponse;
 import com.example.discord.dto.RefreshRequest;
 import com.example.discord.dto.TokenResponse;
 import com.example.discord.dto.register.RegisterRequest;
@@ -32,7 +33,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request,
                                    HttpServletResponse response) {
-        TokenResponse res = authService.login(request, response);
+        LoginResponse res = authService.login(request, response);
 
         return ResponseEntity.ok(res);
     }

@@ -1,6 +1,7 @@
     package com.example.discord.service;
 
     import com.example.discord.dto.LoginRequest;
+    import com.example.discord.dto.LoginResponse;
     import com.example.discord.dto.TokenResponse;
     import com.example.discord.dto.register.RegisterRequest;
     import com.example.discord.entity.RefreshToken;
@@ -52,7 +53,7 @@
         private long jwtRefreshTokenExpiry;
 
 
-        public TokenResponse login(LoginRequest request,
+        public LoginResponse login(LoginRequest request,
                                    HttpServletResponse response) {
 
             Authentication authentication = authenticationManager.authenticate(
@@ -79,7 +80,7 @@
 
             cookieUtil.addRefreshTokenCookie(response, refreshToken);
 
-            TokenResponse res = new TokenResponse(accessToken);
+            LoginResponse res = new LoginResponse(accessToken, principal.getId());
 
             return res;
         }

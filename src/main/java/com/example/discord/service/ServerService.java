@@ -129,6 +129,7 @@ public class ServerService {
                         m.getUser().getId(),
                         m.getUser().getUsername(),
                         m.getRole().name(),
+                        m.getUser().getIconUrl(),
                         onlineUserIds.contains(m.getUser().getId())
                 )).toList();
 
