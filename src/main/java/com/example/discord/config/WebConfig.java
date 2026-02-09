@@ -16,5 +16,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/images/chat/**")
                 .addResourceLocations("file:uploads/chat/")
                 .setCachePeriod(3600);
+
+        registry.addResourceHandler("/images/avatar/**")
+                .addResourceLocations("file:uploads/avatar/")
+                .setCachePeriod(3600);
     }
 }
