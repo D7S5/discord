@@ -17,11 +17,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    public UserResponse getUser(@PathVariable String id) {
-        return userService.getUser(id);
-    }
-
+//    @GetMapping("/{id}")
+//    public UserResponse getUser(@PathVariable String id) {
+//        return userService.getUser(id);
+//    }
     @GetMapping("/me")
     public UserResponse getMe(@AuthenticationPrincipal UserPrincipal user) {
         return userService.getUser(user.getId());

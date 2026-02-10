@@ -32,13 +32,13 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(
-                                "/images/avatar/**",
-                                "/images/chat/**",
+                                "/images/**",
                                 "/uploads/**",
                                 "/css/**",
                                 "/js/**"
                         ).permitAll()
                         .requestMatchers("/api/channels/me").authenticated()
+                        .requestMatchers("/api/users/**").authenticated()
                         .requestMatchers("/api/channels/**").authenticated()
                         .requestMatchers("/api/channels/@me").authenticated()
                         .requestMatchers("/api/channels/friends").authenticated()
