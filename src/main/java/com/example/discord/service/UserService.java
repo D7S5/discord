@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -18,5 +18,15 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return UserResponse.from(user);
+    }
+
+    public void updateProfile(String userId, String username, String statusMessage) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (username != null && !username.isBlank()) {
+            user.setUsername(username);
+        }
+        user.setStatusMessage(statusMessage);
     }
 }

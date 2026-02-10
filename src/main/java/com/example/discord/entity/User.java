@@ -28,6 +28,8 @@ public class User extends BaseEntity {
 
     private UserStatus status;
 
+    private String statusMessage;
+
     private String password;
 
     @Enumerated(EnumType.STRING)

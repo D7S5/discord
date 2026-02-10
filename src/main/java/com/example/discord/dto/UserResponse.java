@@ -11,12 +11,14 @@ public class UserResponse {
     private String id;
     private String username;
     private String iconUrl;
+    private String statusMessage;
 
     public static UserResponse from(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .iconUrl(user.getIconUrl())
+                .statusMessage(user.getStatusMessage())
                 .build();
     }
 }
