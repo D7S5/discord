@@ -16,17 +16,23 @@ public class UserService {
 
     public UserResponse getUser(String id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return UserResponse.from(user);
     }
 
     public void updateProfile(String userId, String username, String statusMessage) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (username != null && !username.isBlank()) {
+            if (username.length() > 32) {
+                throw new IllegalArgumentException("닉네임 너무 깁니다");
+            }
             user.setUsername(username);
         }
-        user.setStatusMessage(statusMessage);
+        user.setStatusMessage(
+                statusMessage == null || statusMessage.isBlank()
+                        ? null
+                        : statusMessage);
     }
 }
