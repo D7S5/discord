@@ -36,8 +36,6 @@ public class MessageService {
                 ? request.getType()
                 : MessageType.TEXT;
 
-        System.out.println("저장 type = " + type);
-
         Message message = Message.builder()
                 .channel(channel)
                 .sender(user)

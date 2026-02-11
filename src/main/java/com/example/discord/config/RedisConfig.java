@@ -20,8 +20,6 @@ public class RedisConfig {
     ) {
         return new StringRedisTemplate(connectionFactory);
     }
-
-
     @Bean
     public RedisTemplate<String, Object> redisTemplate(
             RedisConnectionFactory connectionFactory

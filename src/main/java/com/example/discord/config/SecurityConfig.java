@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/js/**"
                         ).permitAll()
                         .requestMatchers("/api/channels/me").authenticated()
+                        .requestMatchers("/api/me/**").authenticated()
                         .requestMatchers("/api/users/**").authenticated()
                         .requestMatchers("/api/channels/**").authenticated()
                         .requestMatchers("/api/channels/@me").authenticated()

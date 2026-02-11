@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserProfileResponse {
     private String username;
-    private String profileImageUrl;
+    private String iconUrl;
 
     public static UserProfileResponse from(User user) {
         return new UserProfileResponse(

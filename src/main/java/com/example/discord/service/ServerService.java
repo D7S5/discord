@@ -213,7 +213,6 @@ public class ServerService {
                 .stream()
                 .map(ServerResponse::from)
                 .toList();
-
     }
 
     public ServerResponse getServer(Long serverId, String userId) {

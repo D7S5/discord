@@ -39,14 +39,12 @@ public class DmMessageController {
 
         String senderId = principal.getName();
 
-        // 1️⃣ DB 저장
         DmMessage message = dmMessageService.save(
                 request.getRoomId(),
                 senderId,
                 request.getContent()
         );
 
-        // 2️⃣ 상대방에게 전송
         String receiverId = dmRoomService.getOtherUserId(
                 request.getRoomId(),
                 senderId

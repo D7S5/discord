@@ -24,18 +24,5 @@ public class WebSocketConnectHandler {
     @EventListener
     public void handleConnect(SessionConnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-
-//        String serverIdHeader = accessor.getFirstNativeHeader("serverId");
-
-//        if (serverIdHeader == null) return ;
-
-//        long serverId = Long.valueOf(serverIdHeader);
-
-//        presenceService.online(serverId, userId);
-
-//        messagingTemplate.convertAndSend(
-//                "/topic/presence/" + serverId,
-//                new PresenceMessage(userId, "ONLINE")
-//        );
     }
 }

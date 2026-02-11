@@ -25,19 +25,7 @@ public class MemberController {
     @GetMapping("/channels/{serverId}/members")
     public List<MemberStatusResponse> members(
             @PathVariable Long serverId) {
-//        if (user == null) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-//        }
-//
-//        // 서버 멤버 체크 (중요)
-//        if (!serverMemberRepository.existsByServerIdAndUserId(
-//                serverId,
-//                user.getId()
-//        )) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
-//
-//        System.out.println("user = " + user);
+
         return memberService.members(serverId);
     }
 }
