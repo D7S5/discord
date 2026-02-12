@@ -1,5 +1,6 @@
 package com.example.discord.service;
 
+import com.example.discord.dto.VoiceDto;
 import com.example.discord.entity.User;
 import com.example.discord.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class VoiceRoomService {
         redis.opsForHash().put(speakingKey(roomId), userId, speaking);
     }
 
-    public List<Map<String, Object>> getUsers(Long roomId) {
+    public List<VoiceDto> getUsers(Long roomId) {
         Set<Object> rawusers = redis.opsForSet().members(usersKey(roomId));
         if (rawusers == null || rawusers.isEmpty()) return Collections.emptyList();
 
@@ -46,28 +47,27 @@ public class VoiceRoomService {
                             .map(o -> String.valueOf(o.toString())
                             ).toList();
 
-        Map<String, String> usernameMap =
+        Map<String, User> userMap =
                 userRepository.findByIdIn(userIds).stream()
                         .collect(Collectors.toMap(
                                 User::getId,
-                                User::getUsername
+                                user -> user
                         ));
 
         Map<Object, Object> speakingMap =
                 redis.opsForHash().entries(speakingKey(roomId));
 
-        List<Map<String, Object>> result = new ArrayList<>();
+        return userIds.stream()
+                .map(userId -> {
+                        User user = userMap.get(userId);
 
-        for (Object userId : userIds) {
-            Map<String, Object> user = new HashMap<>();
-            user.put("userId", userId);
-            user.put("username", usernameMap.get(userId));
-            user.put(
-                    "speaking",
-                    Boolean.TRUE.equals(speakingMap.get(userId))
-            );
-            result.add(user);
-        }
-        return result;
+                        return VoiceDto.builder()
+                                .userId(userId)
+                                .username(user != null ? user.getUsername() : null)
+                                .iconUrl(user != null ? user.getIconUrl() : null)
+                                .speaking(Boolean.TRUE.equals(speakingMap.get(userId)))
+                                .build();
+                })
+                .toList();
     }
 }
