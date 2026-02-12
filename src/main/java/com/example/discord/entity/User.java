@@ -1,10 +1,7 @@
 package com.example.discord.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -13,6 +10,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "users")
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseEntity {
 
@@ -30,15 +29,11 @@ public class User extends BaseEntity {
 
     private String statusMessage;
 
+    private String provider;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
 
-    @Builder
-    public User(String email, String password, String username) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
-    }
 }
