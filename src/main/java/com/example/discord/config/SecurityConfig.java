@@ -3,6 +3,7 @@ package com.example.discord.config;
 import com.example.discord.security.CustomOAuth2UserService;
 import com.example.discord.security.JwtAuthenticationFilter;
 import com.example.discord.security.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,6 +60,12 @@ public class SecurityConfig {
                 .oauth2Login(oauth -> oauth
                         .userInfoEndpoint(user -> user.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(
+                                (request, response, authException) -> {
+                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                                }
+                        ))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
