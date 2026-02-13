@@ -78,7 +78,6 @@ public class JwtProvider {
             if (!"ACCESS".equals(claims.get("type", String.class))) {
                 return false;
             }
-
             return true;
 
         } catch (ExpiredJwtException e) {

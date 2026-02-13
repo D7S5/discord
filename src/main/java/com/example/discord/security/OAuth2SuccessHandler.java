@@ -40,6 +40,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshToken = jwtProvider.generateRefreshToken(principal.getUser().getId());
         String hashed = TokenHashUtil.hash(refreshToken);
 
+        String redirect = request.getParameter("redirect");
+        if (redirect == null || redirect.isBlank()) redirect = "/channels";
+
         redis.opsForValue().set(
                 REDIS_CURRENT_PREFIX + principal.getUser().getId(),
                 hashed,
@@ -50,7 +53,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookieUtil.addRefreshTokenCookie(response, refreshToken);
 
         response.sendRedirect(
-                "http://localhost:3000/oauth-success?token=" + accessToken
+                "http://localhost:3000/oauth-success"
+                        + "?token=" + accessToken
+                        + "&userId=" + principal.getUser().getId()
+                        + "&redirect=" + java.net.URLEncoder.encode(redirect, java.nio.charset.StandardCharsets.UTF_8)
         );
     }
 }

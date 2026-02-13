@@ -143,8 +143,8 @@ public class AuthService {
 
 //            System.out.println("RefreshToken remaining TTL = " + ttl);
 //
-            System.out.println("REFRESH old hash = " + oldHashToken);
-            System.out.println("REDIS saved hash = " + savedHash);
+//            System.out.println("REFRESH old hash = " + oldHashToken);
+//            System.out.println("REDIS saved hash = " + savedHash);
 
 
         redis.opsForValue().set(
