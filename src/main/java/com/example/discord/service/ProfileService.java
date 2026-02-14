@@ -27,7 +27,7 @@ public class ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow();
 
-        // 1️⃣ 기존 파일 삭제
+        // 기존 파일 삭제
         if (user.getIconUrl() != null &&
                 !user.getIconUrl().contains("default-avatar.png")) {
 
@@ -35,7 +35,8 @@ public class ProfileService {
                     .getFileName()
                     .toString();
 
-            Path oldPath = Paths.get("uploads/avatar").resolve(oldFilename);
+            Path oldDir = Paths.get("uploads/avatar");
+            Path oldPath = oldDir.resolve(oldFilename);
             Files.deleteIfExists(oldPath);
         }
 
@@ -43,7 +44,7 @@ public class ProfileService {
         String ext = StringUtils.getFilenameExtension(image.getOriginalFilename());
 
         // 3️⃣ UUID 파일명 생성
-        String filename = java.util.UUID.randomUUID().toString() + "." + ext;
+        String filename = java.util.UUID.randomUUID() + "." + ext;
 
         Path dir = Paths.get("uploads/avatar");
         Files.createDirectories(dir);
@@ -65,18 +66,21 @@ public class ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow();
 
-        if (user.getIconUrl() != null) {
+        String iconUrl = user.getIconUrl();
 
-            String filename = Paths.get(user.getIconUrl()).getFileName().toString();
+        if (iconUrl != null && !iconUrl.isBlank()
+            && !iconUrl.contains("default-avatar.png")) {
+
+            String filename = Paths.get(iconUrl).getFileName().toString();
+
             Path filePath = Paths.get("uploads/avatar").resolve(filename);
 
             Files.deleteIfExists(filePath);
         }
 
-        user.setIconUrl("/images/avatar/default-avatar.png");
+        user.setIconUrl(null);
 
         return UserProfileResponse.from(user);
     }
-
 }
 

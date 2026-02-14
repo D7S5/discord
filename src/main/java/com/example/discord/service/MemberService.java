@@ -31,7 +31,8 @@ public class MemberService {
                         m.getUser().getUsername(),
                         m.getRole().name(),
                         m.getUser().getIconUrl(),
-                        onlineUserIds.contains(m.getUser().getId()) // true 시에 온라인 상태 체크
+                        // true 시에 온라인 상태 체크
+                        onlineUserIds.contains(m.getUser().getId())
                 )).toList();
     }
 }

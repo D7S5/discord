@@ -29,10 +29,11 @@ public class ImageService {
         String ext = StringUtils.getFilenameExtension(image.getOriginalFilename());
         String filename = UUID.randomUUID() + "." + ext;
 
-        Path path = Paths.get("uploads/chat").resolve(filename);
+        Path dir = Paths.get("uploads/chat");
         // uploads/chat 폴더가 없을시 생성
-        Files.createDirectories(path.getParent());
+        Files.createDirectories(dir);
 
+        Path path = dir.resolve(filename);
         // 클라이언트 파일을 로컬에 저장
         Files.copy(image.getInputStream(), path);
 
