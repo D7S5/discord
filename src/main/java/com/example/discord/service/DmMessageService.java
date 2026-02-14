@@ -18,7 +18,6 @@ import java.util.List;
 public class DmMessageService {
 
     private final DmMessageRepository dmMessageRepository;
-    private final UserRepository userRepository;
 
     public List<DmMessageResponse> getMessages(String roomId) {
         return dmMessageRepository

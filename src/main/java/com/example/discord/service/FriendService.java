@@ -20,18 +20,18 @@ public class FriendService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
 
-    public void sendRequest(String fromUserId, String username) {
+    public void sendRequest(String userId, String targetUsername) {
 
-        User me = userRepository.findById(fromUserId).orElseThrow();
+        User me = userRepository.findById(userId).orElseThrow();
 
-        User target = userRepository.findByUsername(username)
+        User target = userRepository.findByUsername(targetUsername)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (fromUserId.equals(target.getId())) {
+        if (userId.equals(target.getId())) {
             throw new IllegalStateException("Cannot add yourself");
         }
 
-        if (friendRepository.existsBetween(fromUserId, target.getId())) {
+        if (friendRepository.existsBetween(userId, target.getId())) {
             throw new IllegalStateException("Already friends or requested");
         }
 
@@ -39,12 +39,12 @@ public class FriendService {
         friendRepository.save(friendship);
     }
 
-    public void acceptRequest(String myUserId, String friendshipId) {
+    public void acceptRequest(String userId, String friendshipId) {
 
         Friendship friendship = friendRepository.findById(friendshipId)
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
 
-        if (!friendship.getTarget().getId().equals(myUserId)) {
+        if (!friendship.getTarget().getId().equals(userId)) {
             throw new IllegalStateException("No permission to accept");
         }
 

@@ -121,18 +121,18 @@ public class AuthService {
         }
 
         String oldHashToken = TokenHashUtil.hash(oldRefreshToken);
-
         String userId = jwtProvider.getUserId(oldRefreshToken);
+        String key = REDIS_CURRENT_PREFIX + userId;
 
         // reuse 감지
         if (redis.hasKey(REDIS_BLACKLIST_PREFIX + oldHashToken)) {
-            redis.delete(REDIS_CURRENT_PREFIX + userId);
+            redis.delete(key);
             cookieUtil.clearRefreshTokenCookie(response);
             throw new SecurityException("Refresh Token Reuse Detected");
         }
 
-        String key = REDIS_CURRENT_PREFIX + userId;
         String savedHash = redis.opsForValue().get(key);
+
         if (!oldHashToken.equals(savedHash)) {
             redis.delete(key);
             cookieUtil.clearRefreshTokenCookie(response);
@@ -145,7 +145,6 @@ public class AuthService {
 //
 //            System.out.println("REFRESH old hash = " + oldHashToken);
 //            System.out.println("REDIS saved hash = " + savedHash);
-
 
         redis.opsForValue().set(
                 REDIS_BLACKLIST_PREFIX + oldHashToken,
