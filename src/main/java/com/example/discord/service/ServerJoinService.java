@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Transactional
@@ -76,6 +77,9 @@ public class ServerJoinService {
                     .replace("-", "")
                     .substring(0, 8);
         } while (inviteRepository.existsByCode(code));
+        // DB 존재여부 확인
+        // 동시성 문제 UNIQUE 제약 추가
+        // ALTER TABLE invites ADD CONSTRAINT unique_code UNIQUE (code);
         return code;
     }
 
@@ -98,8 +102,12 @@ public class ServerJoinService {
 
         Server server = invite.getServer();
 
-        if (serverMemberRepository.existsByServerAndUser(server, user)) {
-            throw new IllegalStateException("ALREADY_JOINED");
+        Optional<ServerMember> existingMember =
+                serverMemberRepository.findByServerAndUser(server, user);
+
+        // 이미 서버에 가입된 유저일 경우 서버로 이동
+        if (existingMember.isPresent()) {
+            return ServerJoinResponse.from(server, existingMember.get());
         }
 
         ServerMember member = new ServerMember(
@@ -110,7 +118,7 @@ public class ServerJoinService {
         );
         serverMemberRepository.save(member);
 
-        // 4. 초대 사용 횟수 증가
+        // 초대 사용 횟수 증가
         invite.increaseUseCount();
 
         System.out.println(server.getName());
