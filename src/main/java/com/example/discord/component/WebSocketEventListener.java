@@ -17,7 +17,8 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class WebSocketEventListener {
+public class
+WebSocketEventListener {
     private final SimpMessagingTemplate messagingTemplate;
     private final PresenceService presenceService;
 
@@ -38,7 +39,7 @@ public class WebSocketEventListener {
 
         for (Long serverId : serverIds) {
             presenceService.offline(serverId, userId);
-            log.info("🔴 OFFLINE user={} server={}", userId, serverId);
+//            log.info("🔴 OFFLINE user={} server={}", userId, serverId);
         }
 
         messagingTemplate.convertAndSend(

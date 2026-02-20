@@ -92,8 +92,6 @@ public class ServerService {
         serverRepository.deleteById(serverId);
     }
 
-
-
     private void createDefaultChannels(Server server) {
         Channel general = new Channel(server, "general", ChannelType.TEXT);
         Channel random = new Channel(server, "random", ChannelType.TEXT);

@@ -50,8 +50,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
                 servers.add(serverId);
 
                 presenceService.online(serverId, userId);
-
-                log.info("🟢 ONLINE user={} server={}", userId, serverId);
+//                log.info("🟢 ONLINE user={} server={}", userId, serverId);
             }
         }
         // STOMP CONNECT 프레임일 때만

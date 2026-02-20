@@ -39,5 +39,14 @@ public interface ServerMemberRepository extends JpaRepository<ServerMember, Long
         where sm.user.id = :userId
     """)
     List<ServerMember> findMyServers(@Param("userId") String userId);
+
+    @Query("""
+        SELECT CASE WHEN COUNT(sm) > 0 THEN true ELSE false END
+        FROM ServerMember sm
+        WHERE sm.server.id = :serverId
+        AND sm.user.id = :userId
+        AND sm.role = com.example.discord.entity.Role.OWNER
+    """)
+    boolean isOwner(Long serverId, String userId);
 }
 

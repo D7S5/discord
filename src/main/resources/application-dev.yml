@@ -38,13 +38,10 @@ jwt:
   access-expiration: 900000 # 15분
   refresh-expiration: 604800000 # 7일
 
+
+
 #logging:
 #  level:
 #    org.springframework.security: DEBUG
 file:
   upload-dir: uploads/chat
-
-toss:
-  base-url: https://api.tosspayments.com
-  secret-key: ${TOSS_SECRET_KEY}   # test_sk_... 또는 live_sk_...
-  timeout-ms: 5000
