@@ -48,5 +48,7 @@ public interface ServerMemberRepository extends JpaRepository<ServerMember, Long
         AND sm.role = com.example.discord.entity.Role.OWNER
     """)
     boolean isOwner(Long serverId, String userId);
+
+    long countByServerId(Long ServerId);
 }
 

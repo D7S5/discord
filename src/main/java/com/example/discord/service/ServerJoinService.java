@@ -27,6 +27,7 @@ public class ServerJoinService {
     private final ServerMemberRepository serverMemberRepository;
     private final ServerRepository serverRepository;
     private final ChannelRepository channelRepository;
+    private final ServerSubscriptionService subscriptionService;
 
     public InviteResponse createInviteCode(
             Long serverId,
@@ -110,6 +111,13 @@ public class ServerJoinService {
             return ServerJoinResponse.from(server, existingMember.get());
         }
 
+        var limits = subscriptionService.getLimits(Long.valueOf(server.getId()));
+        long memberCount = serverMemberRepository.countByServerId(server.getId());
+
+        if (memberCount >= limits.maxMembers()) {
+            throw new IllegalStateException("PLAN_LIMIT_MEMBERS");
+        }
+
         ServerMember member = new ServerMember(
                 server,
                 user,
@@ -155,7 +163,6 @@ public class ServerJoinService {
             serverRepository.deleteByServerId(serverId);
             log.info("Server deleted: id={}, owner={}", serverId, userId);
         }
-
         serverMemberRepository.delete(member);
     }
 }

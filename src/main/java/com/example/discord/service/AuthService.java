@@ -141,11 +141,6 @@ public class AuthService {
 
         long ttl = Math.max(remainingTTL(oldRefreshToken), 1000);
 
-//            System.out.println("RefreshToken remaining TTL = " + ttl);
-//
-//            System.out.println("REFRESH old hash = " + oldHashToken);
-//            System.out.println("REDIS saved hash = " + savedHash);
-
         redis.opsForValue().set(
                 REDIS_BLACKLIST_PREFIX + oldHashToken,
                 "USED",
