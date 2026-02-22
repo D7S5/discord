@@ -1,9 +1,6 @@
 package com.example.discord.service;
 
-import com.example.discord.billingEntity.PlanCode;
-import com.example.discord.billingEntity.PlanLimits;
-import com.example.discord.billingEntity.PlanPolicy;
-import com.example.discord.billingEntity.SubscriptionStatus;
+import com.example.discord.billingEntity.*;
 import com.example.discord.repository.ServerSubscriptionRepository;
 import com.example.discord.toss.ServerSubscription;
 import lombok.RequiredArgsConstructor;
@@ -62,4 +59,41 @@ public class ServerSubscriptionService {
             case TEAM -> 2;
         };
     }
+
+    @Transactional(readOnly = true)
+    public ServerPlanResponse getServerPlan(Long serverId) {
+
+        var subOpt = subscriptionRepository.findByServerId(serverId);
+
+        PlanCode planCode;
+        SubscriptionStatus status;
+        OffsetDateTime periodEnd;
+
+        if (subOpt.isPresent()) {
+            var sub = subOpt.get();
+            planCode = sub.getPlanCode();
+            status = sub.getStatus();
+            periodEnd = sub.getCurrentPeriodEnd();
+        } else {
+            // 구독이 없으면 FREE 기본값
+            planCode = PlanCode.FREE;
+            status = SubscriptionStatus.ACTIVE;
+            periodEnd = null;
+        }
+
+        var limits = planPolicy.get(planCode);
+
+        return new ServerPlanResponse(
+                planCode,
+                status,
+                periodEnd,
+                new PlanLimitsDto(
+                        limits.maxMembers(),
+                        limits.maxUploadBytes(),
+                        limits.maxVoiceParticipants(),
+                        limits.maxEmojis()
+                )
+        );
+    }
+
 }

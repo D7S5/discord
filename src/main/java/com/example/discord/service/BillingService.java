@@ -16,7 +16,7 @@ import java.util.List;
 public class BillingService {
 
     private final OrderRepository orderRepository;
-    private final ServerMemberRepository serverMemberRepository; // 너 프로젝트에 이미 있을 확률 높음
+    private final ServerMemberRepository serverMemberRepository;
     private final PlanPolicy planPolicy; // 가격/제한값을 서버가 결정
 
     public CreateOrderResponse createOrder(Long serverId, String userId, CreateOrderRequest req) {
