@@ -1,6 +1,7 @@
 package com.example.discord.test;
 
 import com.example.discord.entity.Friendship;
+import com.example.discord.entity.FriendshipStatus;
 import com.example.discord.entity.User;
 import com.example.discord.repository.FriendRepository;
 import com.example.discord.repository.UserRepository;
@@ -54,9 +55,10 @@ class FriendServiceTest {
         Friendship saved = captor.getValue();
         assertThat(saved.getUser()).isSameAs(me);
         assertThat(saved.getTarget()).isSameAs(target);
-        assertThat(saved.getStatus().name()).isEqualTo("PENDING"); // enum import가 애매하면 이 방식도 OK
-
+        assertThat(saved.getStatus()).isEqualTo(FriendshipStatus.PENDING);
+//        save가 정확히 1번 호출됐는지 확인.
         verify(friendRepository, times(1)).save(any(Friendship.class));
+
     }
 
     @Test
@@ -76,9 +78,11 @@ class FriendServiceTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Cannot add yourself");
 
+        // save 호출 0회 never
         verify(friendRepository, never()).save(any());
     }
 
+//     이미 친구/요청 관계가 있으면 예외가 나야 한다.
     @Test
     void sendRequest_fail_when_already_exists_between() {
         // given
