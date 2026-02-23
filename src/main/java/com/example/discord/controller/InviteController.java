@@ -23,20 +23,20 @@ public class InviteController {
     public InviteResponse createInvite(
             @PathVariable Long serverId,
             @RequestBody InviteCreateRequest request,
-            @AuthenticationPrincipal UserPrincipal authUser
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
         return inviteService.createInviteCode(
                 serverId,
-                authUser.getId(),
+                principal.getId(),
                 request
         );
     }
     @PostMapping("/{code}/join")
     public ServerJoinResponse joinServer(
             @PathVariable String code,
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
-        return inviteService.joinServer(code, user.getId());
+        return inviteService.joinServer(code, principal.getId());
     }
 
     @GetMapping("/{code}")

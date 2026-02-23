@@ -42,7 +42,6 @@ public class AuthController {
     public ResponseEntity<?> refresh(HttpServletRequest request,
                                      HttpServletResponse response) {
         String refreshToken = jwtProvider.getRefreshToken(request);
-//        log.info("🔥 /auth/refresh endpoint hit");
         TokenResponse res = authService.refresh(refreshToken, response);
         return ResponseEntity.ok(res);
     }
