@@ -129,9 +129,6 @@ public class ServerJoinService {
         // 초대 사용 횟수 증가
         invite.increaseUseCount();
 
-        System.out.println(server.getName());
-        System.out.println(member.getUser().getUsername());
-
         return ServerJoinResponse.from(server, member);
     }
 
