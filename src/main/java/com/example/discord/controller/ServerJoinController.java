@@ -20,18 +20,18 @@ public class ServerJoinController {
     @DeleteMapping("/channels/{serverId}/leave")
     public ResponseEntity<Void> leaveServer(
             @PathVariable Long serverId,
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
             ) {
-        service.leaveServer(serverId,user.getId());
+        service.leaveServer(serverId, principal.getId());
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/channels/{serverId}")
     public ResponseEntity<Void> deleteServer(
             @PathVariable Long serverId,
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
-        service.leaveServer(serverId,user.getId());
+        service.leaveServer(serverId, principal.getId());
         return ResponseEntity.noContent().build();
     }
 }

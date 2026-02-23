@@ -21,9 +21,9 @@ public class UserController {
     }
 
     @PatchMapping("/me/profile")
-    public void saveProfile(@AuthenticationPrincipal UserPrincipal user,
+    public void saveProfile(@AuthenticationPrincipal UserPrincipal principal,
                             @RequestBody UserProfileUpdateRequest request
                             ) {
-        userService.updateProfile(user.getId(), request.getUsername(), request.getStatus());
+        userService.updateProfile(principal.getId(), request.getUsername(), request.getStatus());
     }
 }

@@ -27,9 +27,9 @@ public class ProfileController {
 
     @DeleteMapping("/avatar")
     public UserProfileResponse deleteAvatar(
-            @AuthenticationPrincipal UserPrincipal userPrincipal
+            @AuthenticationPrincipal UserPrincipal principal
     ) throws IOException {
 
-        return profileService.deleteAvatar(userPrincipal.getId());
+        return profileService.deleteAvatar(principal.getId());
     }
 }

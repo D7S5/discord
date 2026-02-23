@@ -26,17 +26,17 @@ public class ServerController {
     @PostMapping
     public ServerResponse createServer(
             @RequestBody CreateServerRequest request,
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
-        return service.createServer(request, user.getId());
+        return service.createServer(request, principal.getId());
     }
 
     @GetMapping("/{serverId}/lobby")
     public ServerLobbyResponse lobby(
             @PathVariable Long serverId,
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
-        ServerLobbyResponse res = service.getLobby(serverId, user.getId());
+        ServerLobbyResponse res = service.getLobby(serverId, principal.getId());
         return res;
     }
     @GetMapping("/me")
@@ -50,17 +50,16 @@ public class ServerController {
 
     @GetMapping
     public List<ServerListResponse> getMyServers(
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
-        log.info("getServer called, id={}", user.getId());
-        return service.getMyServers(user.getId());
+        return service.getMyServers(principal.getId());
     }
 
     @GetMapping("/{serverId}")
     public ServerResponse getServer(
             @PathVariable Long serverId,
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
-        return service.getServer(serverId, user.getId());
+        return service.getServer(serverId, principal.getId());
     }
 }

@@ -16,7 +16,7 @@ public class MeController {
 
     private final MeService meService;
     @GetMapping("/channels/@me")
-    public MeResponse me(@AuthenticationPrincipal UserPrincipal user){
-        return meService.getMePage(user.getId());
+    public MeResponse me(@AuthenticationPrincipal UserPrincipal principal){
+        return meService.getMePage(principal.getId());
     }
 }

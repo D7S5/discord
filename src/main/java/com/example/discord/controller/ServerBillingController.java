@@ -24,9 +24,9 @@ public class ServerBillingController {
     public ResponseEntity<CreateOrderResponse> createOrder(
             @PathVariable Long serverId,
             @RequestBody CreateOrderRequest req,
-            @AuthenticationPrincipal UserPrincipal user
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
-        return ResponseEntity.ok(billingService.createOrder(serverId, user.getId(), req));
+        return ResponseEntity.ok(billingService.createOrder(serverId, principal.getId(), req));
     }
 
     @GetMapping("/plan")
