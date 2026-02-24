@@ -94,6 +94,7 @@ class FriendServiceTest {
 
         when(userRepository.findById(fromUserId)).thenReturn(Optional.of(me));
         when(userRepository.findByUsername(targetUsername)).thenReturn(Optional.of(target));
+        // existsBetween -> true
         when(friendRepository.existsBetween(anyString(), anyString())).thenReturn(true);
 
         // when & then

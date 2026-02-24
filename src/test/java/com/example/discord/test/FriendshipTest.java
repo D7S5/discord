@@ -5,6 +5,8 @@ import com.example.discord.entity.User;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 
 class FriendshipTest {
 
@@ -20,8 +22,8 @@ class FriendshipTest {
     }
 
     private User mockUser(String id) {
-        User u = org.mockito.Mockito.mock(User.class);
-        org.mockito.Mockito.when(u.getId()).thenReturn(id);
+        User u = mock(User.class);
+        lenient().when(u.getId()).thenReturn(id);
         return u;
     }
 }
