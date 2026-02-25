@@ -41,10 +41,6 @@ public class RoleService {
             throw new IllegalArgumentException("CANNOT_CHANGE_OWNER_ROLE");
         }
 
-//        if (newRole == Role.OWNER) {
-//            throw new IllegalArgumentException("USE_TRANSFER_OWNER_API");
-//        }
-
         target.setRole(
                 target.getRole() == ADMIN ? MEMBER : ADMIN
         );

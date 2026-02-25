@@ -40,10 +40,9 @@ public class ProfileService {
             Files.deleteIfExists(oldPath);
         }
 
-        // 2️⃣ 확장자 추출
         String ext = StringUtils.getFilenameExtension(image.getOriginalFilename());
 
-        // 3️⃣ UUID 파일명 생성
+
         String filename = java.util.UUID.randomUUID() + "." + ext;
 
         Path dir = Paths.get("uploads/avatar");
@@ -52,7 +51,6 @@ public class ProfileService {
         Path path = dir.resolve(filename);
         Files.write(path, image.getBytes());
 
-        // 4️⃣ DB 저장 경로
         String imageUrl = "/images/avatar/" + filename;
         user.setIconUrl(imageUrl);
 
