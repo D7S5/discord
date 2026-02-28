@@ -75,7 +75,7 @@ public class AuthService {
                 TimeUnit.MILLISECONDS
         );
 
-        log.info("LOGIN refresh hash={}", hashedRefreshToken);
+//        log.info("LOGIN refresh hash={}", hashedRefreshToken);
 
         cookieUtil.addRefreshTokenCookie(response, refreshToken);
 
@@ -116,7 +116,7 @@ public class AuthService {
         }
 
         if ( !jwtProvider.validateRefreshToken(oldRefreshToken)) {
-            log.warn("oldRefreshToken = " + oldRefreshToken);
+//            log.warn("oldRefreshToken = " + oldRefreshToken);
             throw new RuntimeException("invalid Refresh Token");
         }
 

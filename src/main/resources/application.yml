@@ -36,6 +36,16 @@ jwt:
   access-expiration: 900000 # 15분
   refresh-expiration: 604800000 # 7일
 
+cloud:
+  aws:
+    region: ap-northeast-2
+    s3:
+      bucket: seoul-discord-clone-bucket
+
+aws:
+  access-key: ${AWS_ACCESS_KEY}
+  secret-key: ${AWS_SECRET_KEY}
+
 #logging:
 #  level:
 #    org.springframework.security: DEBUG
