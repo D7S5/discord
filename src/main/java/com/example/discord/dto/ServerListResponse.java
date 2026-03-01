@@ -8,7 +8,7 @@ import lombok.Getter;
 public class ServerListResponse {
     private Long id;
     private String name;
-//    private String iconUrl;
+    private String iconUrl;
 
     private boolean isOwner;   // ⭐ 핵심
     private String myRole;     // OWNER / ADMIN / MEMBER

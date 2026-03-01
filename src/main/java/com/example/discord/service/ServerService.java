@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +79,7 @@ public class ServerService {
                     return new ServerListResponse(
                             server.getId(),
                             server.getName(),
+                            server.getIconUrl(),
                             isOwner,
                             sm.getRole().name()
                     );
@@ -160,8 +162,10 @@ public class ServerService {
 
         Server server = member.getServer();
 
+        String oldIconKey = server.getIconKey();
+
         try {
-            String key = "server/" + serverId + "/icon.png";
+            String newKey = "server/" + serverId + "/" + UUID.randomUUID() + ".png";
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -175,7 +179,7 @@ public class ServerService {
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucket)
-                    .key(key)
+                    .key(newKey)
                     .contentType("image/png")
                     .build();
 
@@ -188,10 +192,25 @@ public class ServerService {
                     "https://%s.s3.%s.amazonaws.com/%s",
                     bucket,
                     region,
-                    key
+                    newKey
             );
 
             server.setIconUrl(imageUrl);
+            server.setIconKey(newKey);
+
+            if (oldIconKey != null && !oldIconKey.isBlank()) {
+                try {
+                    s3Client.deleteObject(
+                            DeleteObjectRequest.builder()
+                                    .bucket(bucket)
+                                    .key(oldIconKey)
+                                    .build()
+                    );
+
+                } catch (Exception e) {
+                    log.warn("기존 서버 아이콘 삭제 실패. serverId={}, oldKey={}", serverId, oldIconKey, e);
+                }
+            }
 
         } catch (IOException e) {
             throw new RuntimeException("아이콘 업로드 실패", e);
@@ -208,19 +227,21 @@ public class ServerService {
         }
 
         try {
-            String key = "server/" + serverId + "/icon.png";
+            if (server.getIconKey() != null && !server.getIconKey().isBlank()) {
+                s3Client.deleteObject(
+                        DeleteObjectRequest.builder()
+                                .bucket(bucket)
+                                .key(server.getIconKey())
+                                .build()
+                );
+            }
 
-            s3Client.deleteObject(
-                    DeleteObjectRequest.builder()
-                            .bucket(bucket)
-                            .key(key)
-                            .build()
-            );
         } catch (Exception e) {
             log.warn("S3 서버 아이콘 삭제 실패. serverId={}", serverId, e);
         }
 
         server.setIconUrl(defaultServerIconUrl);
+        server.setIconKey(null);
     }
 
     public List<ServerResponse> getServers(String userId) {

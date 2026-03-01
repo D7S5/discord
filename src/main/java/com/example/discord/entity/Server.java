@@ -26,7 +26,8 @@ public class Server {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    private String IconUrl;
+    private String iconUrl;
+    private String iconKey;
 
     @OneToMany(mappedBy = "server", cascade = CascadeType.ALL)
     private List<Channel> channels = new ArrayList<>();
