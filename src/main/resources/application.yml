@@ -41,6 +41,7 @@ cloud:
     region: ap-northeast-2
     s3:
       bucket: seoul-discord-clone-bucket
+    default-server-icon-url: ${DEFAULT_SERVER_ICON}
 
 aws:
   access-key: ${AWS_ACCESS_KEY}

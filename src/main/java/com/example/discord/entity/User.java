@@ -24,6 +24,7 @@ public class User extends BaseEntity {
     private String discriminator;
 
     private String iconUrl;
+    private String iconKey;
 
     private UserStatus status;
 

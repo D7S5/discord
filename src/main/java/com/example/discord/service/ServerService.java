@@ -10,20 +10,21 @@ import com.example.discord.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,15 +36,23 @@ public class ServerService {
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
     private final PresenceService presenceService;
+    private final S3Client s3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    @Value("${cloud.aws.region}")
+    private String region;
+
+    @Value("${cloud.aws.default-server-icon-url}")
+    private String defaultServerIconUrl;
 
     @Transactional
     public ServerResponse createServer(CreateServerRequest request, String userId) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("USER_NOT_FOUND"));
 
         Server server = new Server(request.getName(), user);
-
         serverRepository.save(server);
 
         ServerMember owner = new ServerMember(
@@ -54,7 +63,6 @@ public class ServerService {
         );
 
         memberRepository.save(owner);
-
         createDefaultChannels(server);
 
         return ServerResponse.from(owner);
@@ -65,16 +73,13 @@ public class ServerService {
                 .stream()
                 .map(sm -> {
                     Server server = sm.getServer();
-
-                    boolean isOwner =
-                            server.getOwner().getId().equals(userId);
+                    boolean isOwner = server.getOwner().getId().equals(userId);
 
                     return new ServerListResponse(
                             server.getId(),
                             server.getName(),
-//                            server.getIconUrl(),
                             isOwner,
-                            sm.getRole().name() // OWNER / ADMIN / MEMBER
+                            sm.getRole().name()
                     );
                 })
                 .toList();
@@ -106,7 +111,6 @@ public class ServerService {
 
         boolean isMember = memberRepository.existsByServerIdAndUserId(serverId, userId);
         if (!isMember) {
-            //채널 가입
             throw new IllegalStateException("NOT_A_SERVER_MEMBER");
         }
 
@@ -115,12 +119,8 @@ public class ServerService {
                 .map(ChannelResponse::from)
                 .toList();
 
-
-        List<ServerMember> members =
-                memberRepository.findByServerId(serverId);
-
-        Set<String> onlineUserIds =
-                presenceService.onlineUsers(serverId);
+        List<ServerMember> members = memberRepository.findByServerId(serverId);
+        Set<String> onlineUserIds = presenceService.onlineUsers(serverId);
 
         List<MemberStatusResponse> memberlist = members.stream()
                 .map(m -> new MemberStatusResponse(
@@ -129,7 +129,8 @@ public class ServerService {
                         m.getRole().name(),
                         m.getUser().getIconUrl(),
                         onlineUserIds.contains(m.getUser().getId())
-                )).toList();
+                ))
+                .toList();
 
         Role myRole = memberRepository
                 .findRoleByServerIdAndUserId(serverId, userId)
@@ -144,14 +145,11 @@ public class ServerService {
     }
 
     @Transactional
-    public void updateServerIcon(
-            Long serverId,
-            String userId,
-            MultipartFile file
-    ) {
+    public void updateServerIcon(Long serverId, String userId, MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("파일이 없습니다");
         }
+
         ServerMember member = memberRepository
                 .findByServerIdAndUserId(serverId, userId)
                 .orElseThrow(() -> new SecurityException("서버 멤버 아님"));
@@ -163,30 +161,45 @@ public class ServerService {
         Server server = member.getServer();
 
         try {
-            String dirPath = "uploads/server/" + serverId;
-            Files.createDirectories(Paths.get(dirPath));
+            String key = "server/" + serverId + "/icon.png";
 
-            String filePath = dirPath + "/icon.png";
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             Thumbnails.of(file.getInputStream())
                     .size(48, 48)
                     .outputFormat("png")
                     .outputQuality(1.0)
-                    .toFile(filePath);
+                    .toOutputStream(outputStream);
 
-            file.transferTo(Paths.get(filePath));
+            byte[] imageBytes = outputStream.toByteArray();
 
-            server.setIconUrl("/uploads/server/" + serverId + "/icon.png");
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .contentType("image/png")
+                    .build();
+
+            s3Client.putObject(
+                    putObjectRequest,
+                    RequestBody.fromBytes(imageBytes)
+            );
+
+            String imageUrl = String.format(
+                    "https://%s.s3.%s.amazonaws.com/%s",
+                    bucket,
+                    region,
+                    key
+            );
+
+            server.setIconUrl(imageUrl);
 
         } catch (IOException e) {
             throw new RuntimeException("아이콘 업로드 실패", e);
         }
     }
 
-
     @Transactional
-    public void deleteServerIcon(Long serverId, String userId) throws IOException {
-
+    public void deleteServerIcon(Long serverId, String userId) {
         Server server = serverRepository.findById(serverId)
                 .orElseThrow(() -> new RuntimeException("Server not found"));
 
@@ -194,16 +207,20 @@ public class ServerService {
             throw new SecurityException("No permission");
         }
 
-        if (server.getIconUrl() != null &&
-                !server.getIconUrl().contains("default")) {
+        try {
+            String key = "server/" + serverId + "/icon.png";
 
-            Path path = Paths.get(
-                    server.getIconUrl().replace("/uploads/", "uploads/")
+            s3Client.deleteObject(
+                    DeleteObjectRequest.builder()
+                            .bucket(bucket)
+                            .key(key)
+                            .build()
             );
-            Files.deleteIfExists(path);
+        } catch (Exception e) {
+            log.warn("S3 서버 아이콘 삭제 실패. serverId={}", serverId, e);
         }
 
-        server.setIconUrl("/uploads/server/default.png");
+        server.setIconUrl(defaultServerIconUrl);
     }
 
     public List<ServerResponse> getServers(String userId) {
@@ -214,7 +231,6 @@ public class ServerService {
     }
 
     public ServerResponse getServer(Long serverId, String userId) {
-
         ServerMember member = memberRepository
                 .findByServerIdAndUserId(serverId, userId)
                 .orElseThrow(() -> new AccessDeniedException("서버 멤버가 아님"));
