@@ -15,6 +15,7 @@ import com.example.discord.security.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,8 +109,10 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse refresh(String oldRefreshToken,
+    public TokenResponse refresh(HttpServletRequest request,
                                  HttpServletResponse response) {
+
+        String oldRefreshToken = jwtProvider.getRefreshToken(request)
 
         if ( oldRefreshToken == null || oldRefreshToken.isBlank() ) {
             throw new RuntimeException("Refresh Token missing");

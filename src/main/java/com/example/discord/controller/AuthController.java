@@ -41,8 +41,7 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request,
                                      HttpServletResponse response) {
-        String refreshToken = jwtProvider.getRefreshToken(request);
-        TokenResponse res = authService.refresh(refreshToken, response);
+        TokenResponse res = authService.refresh(request, response);
         return ResponseEntity.ok(res);
     }
 

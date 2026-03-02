@@ -162,7 +162,7 @@ public class ServerService {
 
         Server server = member.getServer();
 
-        String oldIconKey = server.getIconKey();
+        String oldIconKey = resolveOldIconKey(server);
 
         try {
             String newKey = "server/" + serverId + "/" + UUID.randomUUID() + ".png";
@@ -215,6 +215,26 @@ public class ServerService {
         } catch (IOException e) {
             throw new RuntimeException("아이콘 업로드 실패", e);
         }
+    }
+
+    // 예전 키 대응
+    private String resolveOldIconKey(Server server) {
+        if (server.getIconKey() != null && !server.getIconKey().isBlank()) {
+            return server.getIconKey();
+        }
+
+        String iconUrl = server.getIconUrl();
+        if (iconUrl == null || iconUrl.isBlank()) {
+            return null;
+        }
+
+        String prefix = String.format("https://%s.s3.%s.amazonaws.com/", bucket, region);
+
+        if (iconUrl.startsWith(prefix)) {
+            return iconUrl.substring(prefix.length());
+        }
+
+        return null;
     }
 
     @Transactional
