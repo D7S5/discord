@@ -17,8 +17,16 @@ public class DmRoomService {
     private final UserRepository userRepository;
 
     public DmRoom openOrCreate(String meId, String friendId) {
-        User me = userRepository.getReferenceById(meId);
-        User friend = userRepository.getReferenceById(friendId);
+
+        if (meId.equals(friendId)) {
+            throw new IllegalArgumentException("SELF DM NOT ALLOWED");
+        }
+
+        User me = userRepository.findById(meId)
+                .orElseThrow(() -> new IllegalArgumentException("USER NOT FOUND"))
+
+        User friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new IllegalArgumentException("FRIEND NOT FOUND"))
 
         User a = me.getId().compareTo(friend.getId()) < 0 ? me : friend;
         User b = a == me ? friend : me;

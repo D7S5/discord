@@ -112,7 +112,7 @@ public class AuthService {
     public TokenResponse refresh(HttpServletRequest request,
                                  HttpServletResponse response) {
 
-        String oldRefreshToken = jwtProvider.getRefreshToken(request)
+        String oldRefreshToken = jwtProvider.getRefreshToken(request);
 
         if ( oldRefreshToken == null || oldRefreshToken.isBlank() ) {
             throw new RuntimeException("Refresh Token missing");

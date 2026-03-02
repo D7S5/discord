@@ -21,7 +21,6 @@ public class DmController {
             @AuthenticationPrincipal UserPrincipal user,
             @PathVariable String friendUserId
             ) {
-        return dmRoomService.openOrCreate(user.getId(), friendUserId)
-                .getId();
+        return dmRoomService.openOrCreate(user.getId(), friendUserId).getId();
     }
 }
