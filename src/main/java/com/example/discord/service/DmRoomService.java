@@ -23,10 +23,10 @@ public class DmRoomService {
         }
 
         User me = userRepository.findById(meId)
-                .orElseThrow(() -> new IllegalArgumentException("USER NOT FOUND"))
+                .orElseThrow(() -> new IllegalArgumentException("USER NOT FOUND"));
 
         User friend = userRepository.findById(friendId)
-                .orElseThrow(() -> new IllegalArgumentException("FRIEND NOT FOUND"))
+                .orElseThrow(() -> new IllegalArgumentException("FRIEND NOT FOUND"));
 
         User a = me.getId().compareTo(friend.getId()) < 0 ? me : friend;
         User b = a == me ? friend : me;

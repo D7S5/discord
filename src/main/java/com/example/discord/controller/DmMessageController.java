@@ -3,6 +3,7 @@ package com.example.discord.controller;
 import com.example.discord.dto.DmMessageResponse;
 import com.example.discord.dto.DmSendRequest;
 import com.example.discord.entity.DmMessage;
+import com.example.discord.security.UserPrincipal;
 import com.example.discord.service.DmMessageService;
 import com.example.discord.service.DmRoomService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +31,9 @@ public class DmMessageController {
     private final DmRoomService dmRoomService;
 
     @GetMapping("/{roomId}")
-    public List<DmMessageResponse> getMessages(@PathVariable String roomId) {
-        return dmMessageService.getMessages(roomId);
+    public List<DmMessageResponse> getMessages(@PathVariable String roomId,
+                                               @AuthenticationPrincipal UserPrincipal user) {
+        return dmMessageService.getMessages(roomId, user.getId());
     }
 
     @MessageMapping("/dm.send")
