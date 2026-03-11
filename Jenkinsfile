@@ -92,8 +92,7 @@ EOF
 
         stage('Copy Files to EC2') {
             steps {
-                sshagent(credentials: ['discord-prod-ssh
-']) {
+                sshagent(credentials: ['discord-prod-ssh']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_DIR}"
 
