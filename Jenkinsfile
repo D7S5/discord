@@ -108,36 +108,36 @@ EOF
             steps {
                 sshagent(credentials: ['discord-prod-ssh']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} <<EOF
-                        set -e
-                        mkdir -p ${REMOTE_DIR}
-                        cd ${REMOTE_DIR}
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${REMOTE_USER}@${REMOTE_HOST} <<EOF
+        set -e
+        mkdir -p ${REMOTE_DIR}
+        cd ${REMOTE_DIR}
 
-                        if [ -f app.pid ]; then
-                            OLD_PID=\$(cat app.pid)
-                            if ps -p \$OLD_PID > /dev/null 2>&1; then
-                                kill \$OLD_PID || true
-                                sleep 5
-                            fi
-                            rm -f app.pid
-                        fi
+        if [ -f app.pid ]; then
+            OLD_PID=\$(cat app.pid)
+            if ps -p \$OLD_PID > /dev/null 2>&1; then
+                kill \$OLD_PID || true
+                sleep 5
+            fi
+            rm -f app.pid
+        fi
 
-                        pkill -f "java -jar app.jar" || true
-                        sleep 3
+        pkill -f "app.jar" || true
+        sleep 3
 
-                        nohup java -jar app.jar > app.log 2>&1 < /dev/null &
-                        echo \$! > app.pid
-                        sleep 5
+        nohup java -jar app.jar > app.log 2>&1 < /dev/null &
+        echo \$! > app.pid
+        sleep 5
 
-                        echo '=== app.pid ==='
-                        cat app.pid
+        echo '=== app.pid ==='
+        cat app.pid
 
-                        echo '=== process check ==='
-                        ps -ef | grep app.jar | grep -v grep || true
+        echo '=== process check ==='
+        ps -ef | grep app.jar | grep -v grep || true
 
-                        echo '=== recent log ==='
-                        tail -n 50 app.log || true
-                        EOF
+        echo '=== recent log ==='
+        tail -n 50 app.log || true
+        EOF
                     '''
                 }
             }
