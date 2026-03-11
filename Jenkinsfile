@@ -108,35 +108,36 @@ EOF
             steps {
                 sshagent(credentials: ['discord-prod-ssh']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "
-                            mkdir -p ${REMOTE_DIR} &&
-                            cd ${REMOTE_DIR} &&
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} <<EOF
+                        set -e
+                        mkdir -p ${REMOTE_DIR}
+                        cd ${REMOTE_DIR}
 
-                            if [ -f ${PID_FILE} ]; then
-                                OLD_PID=\$(cat ${PID_FILE});
-                                if ps -p \$OLD_PID > /dev/null 2>&1; then
-                                    kill \$OLD_PID || true;
-                                    sleep 5;
-                                fi
-                                rm -f ${PID_FILE};
-                            fi &&
+                        if [ -f app.pid ]; then
+                            OLD_PID=\$(cat app.pid)
+                            if ps -p \$OLD_PID > /dev/null 2>&1; then
+                                kill \$OLD_PID || true
+                                sleep 5
+                            fi
+                            rm -f app.pid
+                        fi
 
-                            pkill -f 'java -jar ${REMOTE_JAR}' || true &&
-                            sleep 3 &&
+                        pkill -f "java -jar app.jar" || true
+                        sleep 3
 
-                            nohup java -jar ${REMOTE_JAR} > ${REMOTE_LOG} 2>&1 < /dev/null &
-                            echo \$! > ${PID_FILE}
-                            sleep 5
+                        nohup java -jar app.jar > app.log 2>&1 < /dev/null &
+                        echo \$! > app.pid
+                        sleep 5
 
-                            echo '=== app.pid ==='
-                            cat ${PID_FILE}
+                        echo '=== app.pid ==='
+                        cat app.pid
 
-                            echo '=== process check ==='
-                            ps -ef | grep app.jar | grep -v grep || true
+                        echo '=== process check ==='
+                        ps -ef | grep app.jar | grep -v grep || true
 
-                            echo '=== recent log ==='
-                            tail -n 50 ${REMOTE_LOG} || true
-                        "
+                        echo '=== recent log ==='
+                        tail -n 50 app.log || true
+                        EOF
                     '''
                 }
             }
