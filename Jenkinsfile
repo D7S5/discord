@@ -16,7 +16,8 @@ pipeline {
         JAR_FILE = 'build/libs/discord-0.0.1-SNAPSHOT.jar'
         REMOTE_JAR = '/home/ubuntu/discord/app.jar'
         REMOTE_ENV = '/home/ubuntu/discord/.env'
-        REMOTE_DEPLOY_SCRIPT = '/home/ubuntu/discord/deploy.sh'
+        REMOTE_LOG = '/home/ubuntu/discord/app.log'
+        PID_FILE = '/home/ubuntu/discord/app.pid'
     }
 
     options {
@@ -98,20 +99,43 @@ EOF
 
                         scp -o StrictHostKeyChecking=no ${JAR_FILE} ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_JAR}
                         scp -o StrictHostKeyChecking=no .env ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_ENV}
-                        scp -o StrictHostKeyChecking=no docker-compose.yml ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/docker-compose.yml
-                        scp -o StrictHostKeyChecking=no deploy.sh ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DEPLOY_SCRIPT}
                     '''
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Run App') {
             steps {
                 sshagent(credentials: ['discord-prod-ssh']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "
-                            chmod +x ${REMOTE_DEPLOY_SCRIPT} &&
-                            ${REMOTE_DEPLOY_SCRIPT}
+                            mkdir -p ${REMOTE_DIR} &&
+                            cd ${REMOTE_DIR} &&
+
+                            if [ -f ${PID_FILE} ]; then
+                                OLD_PID=\$(cat ${PID_FILE});
+                                if ps -p \$OLD_PID > /dev/null 2>&1; then
+                                    kill \$OLD_PID || true;
+                                    sleep 5;
+                                fi
+                                rm -f ${PID_FILE};
+                            fi &&
+
+                            pkill -f 'java -jar ${REMOTE_JAR}' || true &&
+                            sleep 3 &&
+
+                            nohup java -jar ${REMOTE_JAR} > ${REMOTE_LOG} 2>&1 < /dev/null &
+                            echo \$! > ${PID_FILE}
+                            sleep 5
+
+                            echo '=== app.pid ==='
+                            cat ${PID_FILE}
+
+                            echo '=== process check ==='
+                            ps -ef | grep app.jar | grep -v grep || true
+
+                            echo '=== recent log ==='
+                            tail -n 50 ${REMOTE_LOG} || true
                         "
                     '''
                 }
@@ -128,6 +152,7 @@ EOF
         }
         always {
             sh 'rm -f .env || true'
+            archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
         }
     }
 }
