@@ -92,7 +92,8 @@ EOF
 
         stage('Copy Files to EC2') {
             steps {
-                sshagent(credentials: ['chat-prod-ssh']) {
+                sshagent(credentials: ['discord-prod-ssh
+']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_DIR}"
 
@@ -107,7 +108,7 @@ EOF
 
         stage('Deploy') {
             steps {
-                sshagent(credentials: ['chat-prod-ssh']) {
+                sshagent(credentials: ['discord-prod-ssh']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "
                             chmod +x ${REMOTE_DEPLOY_SCRIPT} &&
