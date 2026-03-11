@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Slf4j
 public class RoleController {
 
     private final RoleService roleService;
@@ -24,8 +23,6 @@ public class RoleController {
             @PathVariable String userId,
             @AuthenticationPrincipal UserPrincipal auth
     ) {
-        log.info("toggle role: server={}, target={}", serverId, userId);
-
         roleService.changeRole(
                 serverId,
                 userId,

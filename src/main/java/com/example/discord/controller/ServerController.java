@@ -36,8 +36,7 @@ public class ServerController {
             @PathVariable Long serverId,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
-        ServerLobbyResponse res = service.getLobby(serverId, principal.getId());
-        return res;
+        return service.getLobby(serverId, principal.getId());
     }
     @GetMapping("/me")
     public List<ServerResponse> me

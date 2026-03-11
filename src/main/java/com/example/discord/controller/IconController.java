@@ -30,7 +30,7 @@ public class IconController {
     public void deleteServerIcon(
             @PathVariable Long serverId,
             @AuthenticationPrincipal UserPrincipal user
-    ) throws IOException {
+    ) {
         serverService.deleteServerIcon(serverId, user.getId());
     }
 }
