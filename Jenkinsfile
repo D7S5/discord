@@ -6,18 +6,18 @@ pipeline {
     }
 
     environment {
-        REPO_URL = 'https://github.com/D7S5/discord.git'
-        BRANCH = 'main'
+        REPO_URL   = 'https://github.com/D7S5/discord.git'
+        BRANCH     = 'main'
 
         REMOTE_USER = 'ubuntu'
         REMOTE_HOST = '54.116.132.182'
-        REMOTE_DIR = '/home/ubuntu/discord'
+        REMOTE_DIR  = '/home/ubuntu/discord'
 
-        JAR_FILE = 'build/libs/discord-0.0.1-SNAPSHOT.jar'
+        JAR_FILE   = 'build/libs/discord-0.0.1-SNAPSHOT.jar'
         REMOTE_JAR = '/home/ubuntu/discord/app.jar'
         REMOTE_ENV = '/home/ubuntu/discord/.env'
         REMOTE_LOG = '/home/ubuntu/discord/app.log'
-        PID_FILE = '/home/ubuntu/discord/app.pid'
+        PID_FILE   = '/home/ubuntu/discord/app.pid'
     }
 
     options {
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 sh '''
                     ls -al build/libs
-                    test -f ${JAR_FILE}
+                    test -f "${JAR_FILE}"
                 '''
             }
         }
@@ -95,10 +95,9 @@ EOF
             steps {
                 sshagent(credentials: ['discord-prod-ssh']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_DIR}"
-
-                        scp -o StrictHostKeyChecking=no ${JAR_FILE} ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_JAR}
-                        scp -o StrictHostKeyChecking=no .env ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_ENV}
+                        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_DIR}"
+                        scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "${JAR_FILE}" ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_JAR}
+                        scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null .env ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_ENV}
                     '''
                 }
             }
@@ -108,36 +107,36 @@ EOF
             steps {
                 sshagent(credentials: ['discord-prod-ssh']) {
                     sh '''
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${REMOTE_USER}@${REMOTE_HOST} <<EOF
-        set -e
-        mkdir -p ${REMOTE_DIR}
-        cd ${REMOTE_DIR}
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${REMOTE_USER}@${REMOTE_HOST} <<EOF
+set -e
+mkdir -p ${REMOTE_DIR}
+cd ${REMOTE_DIR}
 
-        if [ -f app.pid ]; then
-            OLD_PID=\$(cat app.pid)
-            if ps -p \$OLD_PID > /dev/null 2>&1; then
-                kill \$OLD_PID || true
-                sleep 5
-            fi
-            rm -f app.pid
-        fi
-
-        pkill -f "app.jar" || true
-        sleep 3
-
-        nohup java -jar app.jar > app.log 2>&1 < /dev/null &
-        echo \$! > app.pid
+if [ -f app.pid ]; then
+    OLD_PID=\$(cat app.pid)
+    if ps -p \$OLD_PID > /dev/null 2>&1; then
+        kill \$OLD_PID || true
         sleep 5
+    fi
+    rm -f app.pid
+fi
 
-        echo '=== app.pid ==='
-        cat app.pid
+pkill -f "app.jar" || true
+sleep 3
 
-        echo '=== process check ==='
-        ps -ef | grep app.jar | grep -v grep || true
+nohup java -jar app.jar > app.log 2>&1 < /dev/null &
+echo \$! > app.pid
+sleep 5
 
-        echo '=== recent log ==='
-        tail -n 50 app.log || true
-        EOF
+echo '=== app.pid ==='
+cat app.pid
+
+echo '=== process check ==='
+ps -ef | grep app.jar | grep -v grep || true
+
+echo '=== recent log ==='
+tail -n 50 app.log || true
+EOF
                     '''
                 }
             }
